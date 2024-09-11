@@ -33,7 +33,7 @@ jobs:
     # If PR-based build. Upload artifact of book for download and review
     - name: Upload artifact
       if: ${{ github.event_name == 'pull_request' }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: book
         path: ./_build/html
