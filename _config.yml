@@ -15,6 +15,7 @@ execute:
     - 'poisson_2D_fenics*'
     - 'demo_ct*'
     - 'sketch*'
+    - 'core_pde*'
 
 
 # Define the name of the latex output file for PDF builds
