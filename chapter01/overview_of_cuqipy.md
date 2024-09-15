@@ -40,7 +40,7 @@ CUQIpy is built to address the need for:
 * CUQIpy consists of many modules for modeling, solving, and analyzing Bayesian inverse problems.
 * These modules mostly correspond to typical components/tools needed for modeling and solving Bayesian inverse problems.
 * Each module contains classes and functions that are used to perform specific tasks.
-* click [here](https://cuqi-dtu.github.io/CUQIpy/api/index.html) for an overview of the modules available in CUQIpy.
+* Click [here](https://cuqi-dtu.github.io/CUQIpy/api/index.html) for an overview of the modules available in CUQIpy.
 
 ![CUQIpy modules](../images/cuqipy_modules.png)
 
@@ -48,7 +48,7 @@ CUQIpy is built to address the need for:
 
 * In addition to the CUQIpy modules, CUQIpy also has plugins that extend the functionality of the framework. 
 * These plugins allow integration of third-party software and tools with CUQIpy.
-* click [here](https://cuqi-dtu.github.io/CUQIpy/#cuqipy-plugins) to see the list of plugins available in CUQIpy.
+* Click [here](https://cuqi-dtu.github.io/CUQIpy/#cuqipy-plugins) to see the list of plugins available in CUQIpy.
 
 ![CUQIpy plugins](../images/cuqipy_modules_plugin.png)
 
