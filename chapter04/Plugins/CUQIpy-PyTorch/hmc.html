@@ -1,0 +1,1376 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hamiltonian Monte Carlo with CUQIpy-PyTorch &#8212; Uncertainty Quantification in Inverse Problems with CUQIpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"dd": "\\mathrm{d}", "abs": ["\\left\\vert#1\\right\\vert", 1], "ve": ["\\bm{#1}", 1], "mat": ["\\mathbf{#1}", 1], "N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"], "bm": ["{\\boldsymbol #1}", 1]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter04/Plugins/CUQIpy-PyTorch/hmc';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Chapter 5: More on CUQIpy technical details" href="../../../chapter05/chapter05.html" />
+    <link rel="prev" title="PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin" href="../CUQIpy-FEniCS/poisson_2D_fenics.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo.png" class="logo__image only-light" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>
+    <script>document.write(`<img src="../../../_static/logo.png" class="logo__image only-dark" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../intro.html">
+                    Uncertainty Quantification in Inverse Problems with CUQIpy
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter01/chapter01.html">Chapter 1: Introduction to CUQIpy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/overview_of_cuqipy.html">Overview of CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/run_mini_book.html">Running the mini-book code examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/intro_example_short.html">Probably the simplest BIP in the world (the short story)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/intro_example_long.html">Probably the simplest BIP in the world (the long story)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter02/chapter02.html">Chapter 2: Problem examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter02/two_forward_problems.html">Two forward models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter02/two_target_distributions.html">Two target distributions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter03/chapter03.html">Chapter 3: Basics of CUQIpy for solving BIPs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_distributions.html">Introduction to distributions and basic sampling in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_forward_models.html">Forward models, data generation and forward UQ</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_bayesian_inverse_problems.html">Bayesian Inverse Problems</a></li>
+
+
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../chapter04.html">Chapter 4: Advanced use cases of CUQIpy</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../gibbs.html">Gibbs sampling</a></li>
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../CUQIpy-CIL/demo_ct.html">X-ray CT using CUQIpy and CUQIpy-CIL plugin</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../../PDE/core_pde.html">Solving PDE-based BIP using core CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CUQIpy-FEniCS/poisson_2D_fenics.html">PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Hamiltonian Monte Carlo with CUQIpy-PyTorch</a></li>
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter05/chapter05.html">Chapter 5: More on CUQIpy technical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter05/geometries_in_cuqipy.html">Geometry Objects: Representation, Parametrization, and Mapping</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter06/chapter06.html">Chapter 6: More theory on priors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter06/markov_random_fields.html">Markov random fields in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter06/entropy.html">Computing the entropy of a distribution, numerically</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter07/chapter07.html">Chapter 7: More theory on sampling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter07/more_theory_on_sampling_with_cuqipy.html">Sampling with CUQIpy: five little stories</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapter08/chapter08.html">Chapter 8: More resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/CUQI-DTU/CUQI-Book/blob/master/chapter04/Plugins/CUQIpy-PyTorch/hmc.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../_sources/chapter04/Plugins/CUQIpy-PyTorch/hmc.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Hamiltonian Monte Carlo with CUQIpy-PyTorch</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Hamiltonian Monte Carlo with CUQIpy-PyTorch</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives-of-this-notebook">Learning objectives of this notebook:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents:</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#why-hamiltonian-monte-carlo">1. Why Hamiltonian Monte Carlo? <a class="anchor" id="why-hmc"></a></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-basics-and-cuqipy-pytorch">2. PyTorch basics and CUQIpy-PyTorch <a class="anchor" id="pytorch-basics"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-primer">PyTorch primer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-computation">Gradient computation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuqipy-pytorch-distributions">CUQIpy-PyTorch distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#really-utilizing-the-power-of-automatic-differentiation">Really utilizing the power of automatic differentiation</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3. Hamiltonian Monte Carlo with CUQIpy-PyTorch <a class="anchor" id="hmc-cuqipy-pytorch"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eight-schools-model">Eight schools model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inverse-problems-with-cuqipy-pytorch">4. Bayesian inverse problems with CUQIpy-PyTorch <a class="anchor" id="bayesian-inverse-problems"></a></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#open-ended-exploration">5. Open-ended exploration <a class="anchor" id="open-ended-exploration"></a></a></li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="hamiltonian-monte-carlo-with-cuqipy-pytorch">
+<h1>Hamiltonian Monte Carlo with CUQIpy-PyTorch<a class="headerlink" href="#hamiltonian-monte-carlo-with-cuqipy-pytorch" title="Link to this heading">#</a></h1>
+<p>In this notebook, we use <a class="reference external" href="https://github.com/CUQI-DTU/CUQIpy-PyTorch">CUQIpy-PyTorch</a> to extend CUQIpy by adding the ability to use PyTorch as a backend for array operations. PyTorch enables two main things: 1) GPU acceleration and 2) automatic differentiation. GPU acceleration is self-explanatory, but automatic differentiation deserves some explanation.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Automatic_differentiation">Automatic differentiation</a> enables computing the gradient of a function with respect to its input variables automatically using repeated application of the chain rule. This is useful for many machine learning algorithms, but also in the context of Bayesian inference. In particular, it means that we can automatically compute the gradient of a log-posterior, which could be arbitrarily complex! This provides a huge advantage because we can then sample from the posterior distribution using Hamiltonian Monte Carlo (HMC) and other gradient-based methods.</p>
+<p>Hamiltonian Monte Carlo and in particular the <a class="reference external" href="https://arxiv.org/abs/1111.4246">No-U-Turn Sampler</a> (NUTS) variant is a general, but still very efficient sampler for sampling high-dimensional distributions that only requires gradient information. This is useful when it is not possible to exploit the structure of the posterior distribution using e.g. conjugacy relations, linearity of forward models or other tricks, which in large part is what the main CUQIpy package is all about.</p>
+<p>In this way, CUQIpy-PyTorch compliments the main CUQIpy package by adding the option for an efficient sampling technique that works for arbitrary posterior distributions by using automatic differentiation to compute the gradient of the log-posterior.</p>
+<p><strong>Make sure you have installed the CUQIpy-PyTorch plugin (link in first paragraph) before starting this exercise.</strong></p>
+<section id="learning-objectives-of-this-notebook">
+<h2>Learning objectives of this notebook:<a class="headerlink" href="#learning-objectives-of-this-notebook" title="Link to this heading">#</a></h2>
+<p>Going through this notebook, you will learn:</p>
+<ul class="simple">
+<li><p>Why Hamiltonian Monte Carlo is useful for sampling distributions</p></li>
+<li><p>The basics of PyTorch tensors</p></li>
+<li><p>The basics of CUQIpy-PyTorch distributions</p></li>
+<li><p>How to use Hamiltonian Monte Carlo to sample from distributions</p></li>
+<li><p>How to use Hamiltonian Monte Carlo to sample Bayesian inference problems</p></li>
+</ul>
+</section>
+<section id="table-of-contents">
+<h2>Table of contents:<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#why-hmc?"><span class="xref myst">1. Why Hamiltonian Monte Carlo?</span></a></p></li>
+<li><p><a class="reference internal" href="#pytorch-basics"><span class="xref myst">2. PyTorch basics and CUQIpy-PyTorch</span></a></p></li>
+<li><p><a class="reference internal" href="#hmc-cuqipy-pytorch"><span class="xref myst">3. Hamiltonian Monte Carlo in CUQIpy-PyTorch</span></a></p></li>
+<li><p><a class="reference internal" href="#bayesian-inverse-problems"><span class="xref myst">4. Bayesian inverse problems with CUQIpy-PyTorch</span></a></p></li>
+<li><p><a class="reference internal" href="#open-ended-exploration"><span class="xref myst">5. Open-ended exploration</span></a></p></li>
+</ul>
+<div style="border: 2px solid #FFB74D; background-color: #FFF3E0; border-radius: 8px; padding: 10px; font-family: Arial, sans-serif; color: #333; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); max-width: 750px; margin: 0 auto;">
+  <strong style="color: #E65100;">⚠️ Note:</strong> 
+<ul class="simple">
+<li><p>This notebook was run on some machine and not using github actions for this book. To run this notebook on your machine, you need to have <a class="reference external" href="https://github.com/CUQI-DTU/CUQIpy-PyTorch">CUQIpy-PyTorch installed</a>.</p></li>
+<li><p>This notebook uses MCMC samplers from the new <code>cuqi.experimental.mcmc</code> module, which are expected to become the default soon. Check out the <a href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc.html#module-cuqi.experimental.mcmc">documentation</a> for more details.</p></li>
+</ul>
+</div><p>First we import the necessary packages. Notice we use the PyTorch package <code class="docutils literal notranslate"><span class="pre">torch</span></code> (imported as <code class="docutils literal notranslate"><span class="pre">xp</span></code>) instead of NumPy for arrays and import both <code class="docutils literal notranslate"><span class="pre">cuqi</span></code> and <code class="docutils literal notranslate"><span class="pre">cuqipy_pytorch</span></code> from CUQIpy and CUQIpy-PyTorch, respectively. We also import <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> for plotting and some timing utilities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span> <span class="k">as</span> <span class="nn">xp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cuqi</span>
+<span class="kn">import</span> <span class="nn">cuqipy_pytorch</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">time</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="why-hamiltonian-monte-carlo">
+<h1>1. Why Hamiltonian Monte Carlo? <a class="anchor" id="why-hmc"></a><a class="headerlink" href="#why-hamiltonian-monte-carlo" title="Link to this heading">#</a></h1>
+<p>As mentioned in the introduction, Hamiltonian Monte Carlo (HMC) is a general, but still very efficient sampler for sampling high-dimensional distributions. It is beyond the scope of this exercise to go into the details of HMC, but we instead give a short example showing how it compares to using the classical Metropolis-Hastings algorithm. For more details in the theory of HMC, we refer to the <a class="reference external" href="https://arxiv.org/abs/1206.1901">original paper</a> by Neal and the <a class="reference external" href="https://arxiv.org/abs/1111.4246">No-U-Turn Sampler</a> (NUTS) variant by Hoffman and Gelman.</p>
+<p>Suppose we were aiming to sample from a 2-dimensional probability density function shaped like a donut. We could also have selected a higher dimensional example making Metropolis-Hastings potentially look even worse, but it makes visualization more difficult.</p>
+<p>This example can be loaded from the <code class="docutils literal notranslate"><span class="pre">DistributionGallery</span></code> class in CUQIpy as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">donut</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">DistributionGallery</span><span class="p">(</span><span class="s1">&#39;donut&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The donut distribution has a manually derived gradient for the logpdf. For illustration let us plot the pdf and arrows showing the gradient of the pdf at a few points.</p>
+<p>Note: Currently there is no <code class="docutils literal notranslate"><span class="pre">plot_pdf</span></code> method for CUQIpy distributions, so we must write our own plotting code. Also at this point we still use NumPy arrays instead of PyTorch tensors and the main CUQIpy package, but we will switch to PyTorch tensors and CUQIpy-PyTorch later.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_pdf</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">plot_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Plot the pdf of a 2-dimensional distribution and optionally its gradient as a vector field. &quot;&quot;&quot;</span>
+    <span class="c1"># Ranges for the plot</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">ng</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span>
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span>
+
+    <span class="c1"># evaluate PDF</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">m</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+    <span class="n">Xf</span><span class="p">,</span> <span class="n">Yf</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">Y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">Xf</span><span class="p">,</span> <span class="n">Yf</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>   <span class="c1"># pts is (m*n, d)</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">donut</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">plot_grad</span><span class="p">:</span>
+        <span class="c1"># evaluate gradient</span>
+        <span class="n">Xg</span><span class="p">,</span> <span class="n">Yg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ng</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">ng</span><span class="p">))</span>
+        <span class="n">Xfg</span><span class="p">,</span> <span class="n">Yfg</span> <span class="o">=</span> <span class="n">Xg</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">Yg</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">posg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">Xfg</span><span class="p">,</span> <span class="n">Yfg</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>  
+        <span class="n">grad</span> <span class="o">=</span> <span class="n">donut</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">posg</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">grad</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">/</span><span class="n">norm</span><span class="p">,</span> <span class="n">grad</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span><span class="o">/</span><span class="n">norm</span>
+
+    <span class="c1"># plot PDF and gradient</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">nl</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span> 
+    <span class="k">if</span> <span class="n">plot_grad</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">posg</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">posg</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We now plot the pdf and gradient arrows using the <code class="docutils literal notranslate"><span class="pre">plot_pdf</span></code> function defined above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plot_pdf</span><span class="p">(</span><span class="n">donut</span><span class="p">,</span> <span class="n">plot_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Donut PDF and Gradient&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/282904eb2fc478748958c1f2b66e64bb67b0bf130c2f5c77295161b032c639c3.png" src="../../../_images/282904eb2fc478748958c1f2b66e64bb67b0bf130c2f5c77295161b032c639c3.png" />
+</div>
+</div>
+<p>We can now sample from the distribution using both the Metropolis-Hastings algorithm and HMC (NUTS). We also store the time it takes to sample from the distribution using each method.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Metropolis-Hastings&quot;</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">samples_MH</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">mcmc</span><span class="o">.</span><span class="n">MH</span><span class="p">(</span><span class="n">donut</span><span class="p">)</span><span class="o">.</span><span class="n">warmup</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">get_samples</span><span class="p">()</span><span class="o">.</span><span class="n">burnthin</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">t_MH</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hamiltonian Monte Carlo (NUTS)&quot;</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">samples_NUTS</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">mcmc</span><span class="o">.</span><span class="n">NUTS</span><span class="p">(</span><span class="n">donut</span><span class="p">)</span><span class="o">.</span><span class="n">warmup</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">get_samples</span><span class="p">()</span><span class="o">.</span><span class="n">burnthin</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">t_NUTS</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Metropolis-Hastings
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup: 100%|██████████| 1000/1000 [00:00&lt;00:00, 5252.24it/s]
+Sample: 100%|██████████| 1000/1000 [00:00&lt;00:00, 4894.39it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hamiltonian Monte Carlo (NUTS)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup: 100%|██████████| 1000/1000 [00:03&lt;00:00, 284.54it/s]
+Sample: 100%|██████████| 1000/1000 [00:04&lt;00:00, 226.60it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can then compare the samples obtained from the two methods by plotting the samples in a “pair plot” (a scatter plot for each pair of variables).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_MH</span><span class="o">.</span><span class="n">plot_pair</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Metropolis-Hastings&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+
+
+<span class="n">samples_NUTS</span><span class="o">.</span><span class="n">plot_pair</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Hamiltonian Monte Carlo (NUTS)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/2f3d0b55006e82ae067e5fc1b706646201019a61b0c035944ff89100906a26f8.png" src="../../../_images/2f3d0b55006e82ae067e5fc1b706646201019a61b0c035944ff89100906a26f8.png" />
+<img alt="../../../_images/eba35d6d71363379ebf482edd16231efa43e5d0455642a099b12e5f5cb00a63a.png" src="../../../_images/eba35d6d71363379ebf482edd16231efa43e5d0455642a099b12e5f5cb00a63a.png" />
+</div>
+</div>
+<p>Notice that the samples obtained using HMC are much more evenly distributed than the samples obtained using the Metropolis-Hastings algorithm (which may not even have explored the entire distribution yet).</p>
+<p>We can also see that the chains obtained using HMC are much less correlated than the chains obtained using the Metropolis-Hastings algorithm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Metropolis-Hastings&#39;</span><span class="p">)</span>
+<span class="n">samples_MH</span><span class="o">.</span><span class="n">plot_chain</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Hamiltonian Monte Carlo (NUTS)&#39;</span><span class="p">)</span>
+<span class="n">samples_NUTS</span><span class="o">.</span><span class="n">plot_chain</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/935d1bd25d50f313a971a493499f75b099f825c3bb3a567a45a70895b96d131b.png" src="../../../_images/935d1bd25d50f313a971a493499f75b099f825c3bb3a567a45a70895b96d131b.png" />
+</div>
+</div>
+<p>Finally, we can compare the effective samples size (ESS) of the two chains. The ESS is a measure of the number of independent samples in a chain. We divide by the total time it took to sample from the distribution to get the effective samples per second (ESS/s). We can see that the ESS/s is (depending on the random number generation) higher for the HMC chain than the Metropolis-Hastings chain.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MH: Effective samples / second </span><span class="si">{</span><span class="n">samples_MH</span><span class="o">.</span><span class="n">compute_ess</span><span class="p">()</span><span class="o">/</span><span class="n">t_MH</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NUTS: Effective samples / second </span><span class="si">{</span><span class="n">samples_NUTS</span><span class="o">.</span><span class="n">compute_ess</span><span class="p">()</span><span class="o">/</span><span class="n">t_NUTS</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MH: Effective samples / second [32.46792878 31.5082498 ] 
+NUTS: Effective samples / second [35.77052168 36.59385474] 
+</pre></div>
+</div>
+</div>
+</div>
+<p>There is a lot more to say about HMC, but we will leave that for another time. For now, we will move on to using HMC in CUQIpy-PyTorch.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="pytorch-basics-and-cuqipy-pytorch">
+<h1>2. PyTorch basics and CUQIpy-PyTorch <a class="anchor" id="pytorch-basics"></a><a class="headerlink" href="#pytorch-basics-and-cuqipy-pytorch" title="Link to this heading">#</a></h1>
+<p><strong>The examples in here are for illustration purposes only. You do not need to understand the all details of automatic differentiation to use CUQIpy-PyTorch.</strong></p>
+<p>In the previous section we used the NUTS implementation from the main CUQIpy package, which requires the gradient of the log-posterior to be manually defined in the <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> class.</p>
+<p>In this section we see how to use PyTorch tensors and automatic differentiation to compute the gradient of any distribution. The obvious benefit here is that we do not need to manually define the gradient of the logpdf, which makes the modelling much more flexible.</p>
+<section id="pytorch-primer">
+<h2>PyTorch primer<a class="headerlink" href="#pytorch-primer" title="Link to this heading">#</a></h2>
+<p>Before using CUQIpy-PyTorch, we need to learn a bit about PyTorch.</p>
+<p>First, we can create a PyTorch tensor in a similar way to NumPy arrays, except we replace <code class="docutils literal notranslate"><span class="pre">np.array</span></code> with <code class="docutils literal notranslate"><span class="pre">torch.tensor</span></code> (or <code class="docutils literal notranslate"><span class="pre">xp.tensor</span></code> if we have imported PyTorch as <code class="docutils literal notranslate"><span class="pre">xp</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([1., 2., 3.])
+</pre></div>
+</div>
+</div>
+</div>
+<p>PyTorch mirrors the NumPy API for array operations, so we can use the same operations on PyTorch tensors as we would on NumPy arrays. This includes broadcasting, slicing, indexing as well as most mathematical operations from e.g. the linear algebra sub-package <code class="docutils literal notranslate"><span class="pre">linalg</span></code>.</p>
+<p>For example, we can create a matrix and compute the matrix-vector product and then take the 2-norm of the result.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="c1"># Multiply A with x</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">A</span><span class="nd">@x</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Compute norm of A@x</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([14., 32., 50.])
+tensor(60.9918)
+</pre></div>
+</div>
+</div>
+</div>
+<section id="gradient-computation">
+<h3>Gradient computation<a class="headerlink" href="#gradient-computation" title="Link to this heading">#</a></h3>
+<p>Any operation involving PyTorch tensors can be differentiated! To use this feature, we need to define each tensor with the <code class="docutils literal notranslate"><span class="pre">requires_grad</span></code> flag set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. This tells PyTorch to keep track of the operations performed on the tensor and to compute the gradient of the tensor with respect to the operations performed on it. For example, from the example above, we can automatically evaluate the gradient of the expression</p>
+<div class="math notranslate nohighlight">
+\[
+\|\mathbf{A} \mathbf{x}\|_2^2
+\]</div>
+<p>with respect to <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>, for the specific value of <span class="math notranslate nohighlight">\(\mathbf{x}=[1,2,3]^T\)</span> as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Say we want to compute gradient wrt x</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># Compute z = ||A@x||^2</span>
+
+<span class="c1"># Now evaluate gradient of z wrt x</span>
+<span class="n">z</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># This will compute dz/dx and store it in x.grad</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([ 984., 1176., 1368.])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Mathematically we know the gradient is given by</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial}{\partial \mathbf{x}} \|\mathbf{A} \mathbf{x}\|_2^2 = 2 \mathbf{A}^T \mathbf{A} \mathbf{x}
+\]</div>
+<p>which we can verify by comparing to the gradient computed by PyTorch.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">2</span><span class="o">*</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="nd">@A@x</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([ 984., 1176., 1368.], grad_fn=&lt;MvBackward0&gt;)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="cuqipy-pytorch-distributions">
+<h2>CUQIpy-PyTorch distributions<a class="headerlink" href="#cuqipy-pytorch-distributions" title="Link to this heading">#</a></h2>
+<p>Because the <code class="docutils literal notranslate"><span class="pre">cuqi</span></code> distributions are written using NumPy and SciPy, we instead have to use the distributions defined in <code class="docutils literal notranslate"><span class="pre">cuqipy_pytorch</span></code>.</p>
+<p><em>We are thinking of making the main CUQIpy package agnostic to the backend such that it can use either NumPy or PyTorch (or Jax, or TensorFlow etc.), but this is not yet implemented.</em></p>
+<p>Instead, we use thin wrappers around PyTorch distributions, that acts as a drop-in replacement for the <code class="docutils literal notranslate"><span class="pre">cuqi</span></code> distributions. They are imported as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cuqipy_pytorch.distribution</span> <span class="kn">import</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">HalfGaussian</span><span class="p">,</span> <span class="n">Lognormal</span><span class="p">,</span> <span class="n">Uniform</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">StackedJointDistribution</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>CUQIpy-PyTorch distributions work in a similar way to the <code class="docutils literal notranslate"><span class="pre">cuqi</span></code> distributions, but instead of using NumPy arrays, they use PyTorch tensors. For example, we can create a 2D i.i.d. Gaussian distribution and look at some of its properties and methods as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">xp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Name: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Mean: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Cov: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">cov</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; PDF at 0: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Log PDF at 0: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Name: x
+ Mean: tensor([0., 0.])
+ Cov: tensor([[1., 0.],
+        [0., 1.]])
+ PDF at 0: 0.1591549664735794
+ Log PDF at 0: -1.8378770351409912
+</pre></div>
+</div>
+</div>
+</div>
+<p>The major difference is that the gradient of the logpdf is automatically computed using PyTorch’s automatic differentiation feature. We can inspect the code for the <code class="docutils literal notranslate"><span class="pre">gradient</span></code> method to see how this is done. This should look similar to the example we did for PyTorch gradients above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Evaluate gradient for some random point</span>
+<span class="n">x</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([-0.0108, -1.3198])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inspect the code for evaluating gradient</span>
+x.gradient<span class="o">??</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Red">Signature:</span> x<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>gradient<span class=" -Color -Color-Bold -Color-Bold-Yellow">(</span>v1<span class=" -Color -Color-Bold -Color-Bold-Yellow">,</span> v2<span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span><span class=" -Color -Color-Bold -Color-Bold-Green">None</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">)</span>
+<span class=" -Color -Color-Bold -Color-Bold-Red">Docstring:</span> Returns the gradient of the log density at x. 
+<span class=" -Color -Color-Bold -Color-Bold-Red">Source:</span>   
+    <span class=" -Color -Color-Bold -Color-Bold-Green">def</span> gradient<span class=" -Color -Color-Bold -Color-Bold-Yellow">(</span>self<span class=" -Color -Color-Bold -Color-Bold-Yellow">,</span> v1<span class=" -Color -Color-Bold -Color-Bold-Yellow">,</span> v2<span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span><span class=" -Color -Color-Bold -Color-Bold-Green">None</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">):</span>
+        <span class=" -Color -Color-Bold -Color-Bold-Green">if</span> v2 <span class=" -Color -Color-Bold -Color-Bold-Green">is</span> <span class=" -Color -Color-Bold -Color-Bold-Green">None</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">:</span>              <span class=" -Color -Color-Bold -Color-Bold-Red">#Prior case</span>
+            v1<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>requires_grad <span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span> <span class=" -Color -Color-Bold -Color-Bold-Green">True</span>
+            v1<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>grad <span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span> <span class=" -Color -Color-Bold -Color-Bold-Green">None</span>
+            Q <span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span> self<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>logpdf<span class=" -Color -Color-Bold -Color-Bold-Yellow">(</span>v1<span class=" -Color -Color-Bold -Color-Bold-Yellow">)</span>     <span class=" -Color -Color-Bold -Color-Bold-Red"># Forward pass</span>
+            Q<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>backward<span class=" -Color -Color-Bold -Color-Bold-Yellow">()</span>            <span class=" -Color -Color-Bold -Color-Bold-Red"># Backward pass</span>
+            <span class=" -Color -Color-Bold -Color-Bold-Green">return</span> v1<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>grad
+        <span class=" -Color -Color-Bold -Color-Bold-Green">else</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">:</span>                       <span class=" -Color -Color-Bold -Color-Bold-Red">#Likelihood case</span>
+            v2<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>requires_grad <span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span> <span class=" -Color -Color-Bold -Color-Bold-Green">True</span>
+            v2<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>grad <span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span> <span class=" -Color -Color-Bold -Color-Bold-Green">None</span>
+            Q <span class=" -Color -Color-Bold -Color-Bold-Yellow">=</span> self<span class=" -Color -Color-Bold -Color-Bold-Yellow">(</span>v2<span class=" -Color -Color-Bold -Color-Bold-Yellow">).</span>logpdf<span class=" -Color -Color-Bold -Color-Bold-Yellow">(</span>v1<span class=" -Color -Color-Bold -Color-Bold-Yellow">)</span> <span class=" -Color -Color-Bold -Color-Bold-Red"># Forward pass</span>
+            Q<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>backward<span class=" -Color -Color-Bold -Color-Bold-Yellow">()</span>            <span class=" -Color -Color-Bold -Color-Bold-Red"># Backward pass</span>
+            <span class=" -Color -Color-Bold -Color-Bold-Green">return</span> v2<span class=" -Color -Color-Bold -Color-Bold-Yellow">.</span>grad
+<span class=" -Color -Color-Bold -Color-Bold-Red">File:</span>      c:\users\nabr\anaconda3\envs\pytorch\lib\site-packages\cuqipy_pytorch\distribution.py
+<span class=" -Color -Color-Bold -Color-Bold-Red">Type:</span>      method
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="really-utilizing-the-power-of-automatic-differentiation">
+<h2>Really utilizing the power of automatic differentiation<a class="headerlink" href="#really-utilizing-the-power-of-automatic-differentiation" title="Link to this heading">#</a></h2>
+<p>One of the main use-cases for automatic differentiation in the context of Bayesian inference is to compute the gradient of more complex Bayesian models. To illustrate this, suppose one part of the Bayesian model contains a Gaussian distribution with a covariance matrix that is a function of another random variable, say <span class="math notranslate nohighlight">\(s\)</span>. The Gaussian could be written as follows.</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{x} \mid s \sim \mathcal{N}(\mathbf{0}, \exp(-s)^2 \mathbf{I}).
+\]</div>
+<p>In CUQIpy-PyTorch (or CUQIpy), we can define this distribution as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">xp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI Gaussian. Conditioning variables [&#39;s&#39;].
+</pre></div>
+</div>
+</div>
+</div>
+<p>To utilize Hamiltonian Monte Carlo to sample from a Bayesian model that contains this distribution, we need to compute the logpdf and gradient respect to <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and <span class="math notranslate nohighlight">\(s\)</span>! This is where automatic differentiation comes in!</p>
+<p>If we define the values of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and <span class="math notranslate nohighlight">\(s\)</span> we want to compute the gradient of the logpdf at, then evaluate the logpdf, we can use the <code class="docutils literal notranslate"><span class="pre">.backward()</span></code> method to compute the gradient of the logpdf with respect to <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and <span class="math notranslate nohighlight">\(s\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Points to compute gradient at</span>
+<span class="n">x_in</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">s_in</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Evaluate logpdf</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">logd</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_in</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s_in</span><span class="p">)</span>
+
+<span class="c1"># Compute gradient (dlogpdf/dx, dlogpdf/ds)</span>
+<span class="n">output</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="c1"># Print gradient of logpdf wrt x and s</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Gradient wrt x: </span><span class="si">{</span><span class="n">x_in</span><span class="o">.</span><span class="n">grad</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Gradient wrt s: </span><span class="si">{</span><span class="n">s_in</span><span class="o">.</span><span class="n">grad</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Gradient wrt x: tensor([-54.5982, -54.5982])
+ Gradient wrt s: -107.19629669189453
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that this was an arbitrary expression for the covariance of the Gaussian. You can try to change the expression and see how the gradient changes.</p>
+<p>If we compare with the CUQIpy package, we are not able to compute the gradient with respect to <span class="math notranslate nohighlight">\(s\)</span>, because there is no way to derive the gradient from the user-defined expression using NumPy and SciPy!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CUQIpy Gaussian</span>
+<span class="n">x_cuqi</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+<span class="c1"># Evaluating logpdf goes fine</span>
+<span class="n">x_cuqi</span><span class="o">.</span><span class="n">logd</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># We can even get gradient w.r.t x</span>
+<span class="n">x_cuqi</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># But not with respect to s! This is because there is a user-defined expression for the covariance that we cant differentiate</span>
+<span class="c1">#x_cuqi.gradient(x=np.ones(2), s=2) # This wont work</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([-54.59815003, -54.59815003])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>3. Hamiltonian Monte Carlo with CUQIpy-PyTorch <a class="anchor" id="hmc-cuqipy-pytorch"></a><a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>We can now use the CUQIpy-PyTorch to define a Bayesian model and use Hamiltonian Monte Carlo to sample from the posterior distribution.</p>
+<p>We built the interface to exactly match CUQIpy! The only difference is that we use the <code class="docutils literal notranslate"><span class="pre">cuqipy_pytorch</span></code> package instead of the <code class="docutils literal notranslate"><span class="pre">cuqi</span></code> package.</p>
+<p>In the section earlier we already loaded the distributions. What remains is to load a sampler. Here we load a new NUTS sampler, which automatically handles all the details of gradient computation we saw in the previous section, so we do not need to worry about it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cuqipy_pytorch.sampler</span> <span class="kn">import</span> <span class="n">NUTS</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For convenience, let us even define a function that can simply takes our defined Bayesian model and data and uses the NUTS sampler to sample the parameters of the Bayesian model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># A convenience function to sample a Bayesian model</span>
+<span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="o">*</span><span class="n">densities</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">Nb</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Sample given by a list of densities. The observations are given as keyword arguments. &quot;&quot;&quot;</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">StackedJointDistribution</span><span class="p">(</span><span class="o">*</span><span class="n">densities</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">NUTS</span><span class="p">(</span><span class="n">P</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">))</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">Nb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This function first defines a <code class="docutils literal notranslate"><span class="pre">cuqi</span></code> joint distribution from the given densities, conditions the joint distribution on potential data, then uses the NUTS sampler to sample.</p>
+<p>To show how this works let us first sample a case with two independent Gaussian distributions.</p>
+<p>\begin{align*}
+x &amp;\sim \mathcal{N}(0, 1) \
+y &amp;\sim \mathcal{N}(3, 5)
+\end{align*}</p>
+<p>This is done as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bayesian model</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Sample from the model</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Plot the samples</span>
+<span class="n">samples</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">()</span>
+<span class="n">samples</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 1000/1000 [00:05, 176.13it/s, step size=8.48e-01, acc. prob=0.924]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[&lt;Axes: title={&#39;center&#39;: &#39;y&#39;}&gt;, &lt;Axes: title={&#39;center&#39;: &#39;y&#39;}&gt;]],
+      dtype=object)
+</pre></div>
+</div>
+<img alt="../../../_images/7c698a70cbbcdeb445f5944a8d369e335f3785ff09f554d72c275d9747b47895.png" src="../../../_images/7c698a70cbbcdeb445f5944a8d369e335f3785ff09f554d72c275d9747b47895.png" />
+<img alt="../../../_images/72050c65e9a8bbba2a2f434d6aa808e001fa224616caa441fcc64f1b954f1e68.png" src="../../../_images/72050c65e9a8bbba2a2f434d6aa808e001fa224616caa441fcc64f1b954f1e68.png" />
+</div>
+</div>
+<p>We can also define a slightly more complicated model</p>
+<p>\begin{align*}
+d &amp;\sim \mathrm{Gamma}(1, 1) \
+x &amp;\sim \mathcal{N}(0, \exp(-d)) \
+y &amp;\sim \mathcal{N}(x^2, 5)
+\end{align*}</p>
+<p>and suppose we observe <span class="math notranslate nohighlight">\(y=1\)</span>. We can sample from the posterior distribution <span class="math notranslate nohighlight">\(p(d, x \mid y=1)\)</span> as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define Bayesian model</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Sample from the model, given y=1</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># And plot samples of x and d</span>
+<span class="n">samples</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">()</span>
+<span class="n">samples</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 1000/1000 [00:20, 49.62it/s, step size=2.65e-01, acc. prob=0.821]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[&lt;Axes: title={&#39;center&#39;: &#39;x&#39;}&gt;, &lt;Axes: title={&#39;center&#39;: &#39;x&#39;}&gt;]],
+      dtype=object)
+</pre></div>
+</div>
+<img alt="../../../_images/e851ec3e1583376e07bf84d02bc722c8b55b6dc3116c9140c9a72a0ff0951ed5.png" src="../../../_images/e851ec3e1583376e07bf84d02bc722c8b55b6dc3116c9140c9a72a0ff0951ed5.png" />
+<img alt="../../../_images/415c60968927acfd817044279949b9f1ac7ea92d375663a56062a8ce77098113.png" src="../../../_images/415c60968927acfd817044279949b9f1ac7ea92d375663a56062a8ce77098113.png" />
+</div>
+</div>
+<p>Hopefully this gives you a good idea of how to use CUQIpy-PyTorch to define Bayesian models and sample from them using Hamiltonian Monte Carlo. We end this section with a classic example of Bayesian inference using Hamiltonian Monte Carlo.</p>
+<section id="eight-schools-model">
+<h2>Eight schools model<a class="headerlink" href="#eight-schools-model" title="Link to this heading">#</a></h2>
+<p>The eight schools model is a classic example made famous by the Bayesian Data Analysis book by Gelman et. al.</p>
+<p>It is often used to illustrate the notation and code-style of probabilistic programming languages and whether they are able to handle the model.</p>
+<p>The actual model is explained in the BDA book or in the Edward 1.0 PPL notebook (<a class="reference external" href="https://github.com/blei-lab/edward/blob/master/notebooks/eight_schools.ipynb">link</a>). We do not go into details here.</p>
+<p>The Bayesian model can be written as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+    \mu &amp;\sim \mathcal{N}(0, 10^2)\\
+    \tau &amp;\sim \log\mathcal{N}(5, 1)\\
+    \boldsymbol \theta' &amp;\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_m)\\
+    \boldsymbol \theta &amp;= \mu + \tau \boldsymbol \theta'\\
+    \mathbf{y} &amp;\sim \mathcal{N}(\boldsymbol \theta, \boldsymbol \sigma^2 \mathbf{I}_m)
+\end{align*}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{y}\in\mathbb{R}^m\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol \sigma\in\mathbb{R}^m\)</span> is observed data.</p>
+<p>In CUQIpy-PyTorch we can define the model and sample as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_obs</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">28</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">18</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">σ_obs</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">xp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">μ</span>     <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">τ</span>     <span class="o">=</span> <span class="n">Lognormal</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">θp</span>    <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">θ</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">μ</span><span class="p">,</span> <span class="n">τ</span><span class="p">,</span> <span class="n">θp</span><span class="p">:</span> <span class="n">μ</span><span class="o">+</span><span class="n">τ</span><span class="o">*</span><span class="n">θp</span>
+<span class="n">y</span>     <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">θ</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">σ_obs</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">samples</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span> <span class="n">τ</span><span class="p">,</span> <span class="n">θp</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_obs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 1000/1000 [00:27, 36.34it/s, step size=2.79e-01, acc. prob=0.914]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can then investigate the posterior samples for <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>, <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\tau\)</span> as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot posterior samples</span>
+<span class="n">samples</span><span class="p">[</span><span class="s2">&quot;θp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot_violin</span><span class="p">();</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">&quot;μ&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="c1"># Average effect</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">&quot;τ&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="c1"># Average variance</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[5.551549]
+[12.458321]
+</pre></div>
+</div>
+<img alt="../../../_images/ad56c3ad966017d5cccce9ee4bdfeccce19661c2ed9b0bb827b9934f3e70d4ab.png" src="../../../_images/ad56c3ad966017d5cccce9ee4bdfeccce19661c2ed9b0bb827b9934f3e70d4ab.png" />
+</div>
+</div>
+<p>Main point is that CUQIpy-PyTorch is very flexible and can be used to sample from any combination of distributions.</p>
+</section>
+<section id="bayesian-inverse-problems-with-cuqipy-pytorch">
+<h2>4. Bayesian inverse problems with CUQIpy-PyTorch <a class=" anchor" id="bayesian-inverse-problems"></a><a class="headerlink" href="#bayesian-inverse-problems-with-cuqipy-pytorch" title="Link to this heading">#</a></h2>
+<p>We now turn our attention to Bayesian inverse problems. To start as a sanity check we can use a testproblem from the main CUQIpy package and compare with. Here we consider the a deconvolution problem with Bayesian model:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\mathbf{x} &amp;\sim \mathcal{N}(\mathbf{0}, 0.2 \mathbf{I}_n)\\
+\mathbf{y} &amp;\sim \mathcal{N}(\mathbf{A}\mathbf{x}, 0.05 \mathbf{I}_m)
+\end{align*}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> are random variables and <span class="math notranslate nohighlight">\(\mathbf{A}\in\mathbb{R}^{m\times n}\)</span> is a known convolution matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">probinfo</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">testproblem</span><span class="o">.</span><span class="n">Deconvolution1D</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;sinc&quot;</span><span class="p">,</span> <span class="n">use_legacy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+
+<span class="c1"># CUQIpy Bayesian model</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+
+<span class="n">BP</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">BayesianProblem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">sample_posterior</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="c1"># Automatic sampler selection</span>
+
+<span class="n">samples</span><span class="o">.</span><span class="n">plot_ci</span><span class="p">(</span><span class="n">exact</span><span class="o">=</span><span class="n">probinfo</span><span class="o">.</span><span class="n">exactSolution</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic sampler selection is a work-in-progress. !!!
+!!!       Always validate the computed results.        !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Using direct sampling of Gaussian posterior. Only works for small-scale problems with dim&lt;=2000.
+No burn-in needed for direct sampling.
+ Sample 1000 / 1000
+Elapsed time: 0.019788742065429688
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x1916664c320&gt;,
+ &lt;matplotlib.lines.Line2D at 0x191687f2c60&gt;,
+ &lt;matplotlib.collections.PolyCollection at 0x191665f1e50&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/976975377f835b025166956ea7ebed72ac815090c7b6be2fc8ead7040e2f43ab.png" src="../../../_images/976975377f835b025166956ea7ebed72ac815090c7b6be2fc8ead7040e2f43ab.png" />
+</div>
+</div>
+<p>Because we utilize the structure of the problem in CUQIpy, the sampling is very fast.</p>
+<p>We can write the same model in CUQIpy-PyTorch as shown below. Note here that we have to add the forward model <code class="docutils literal notranslate"><span class="pre">A</span></code> to the autograd framework of PyTorch. There is a function <code class="docutils literal notranslate"><span class="pre">cuqipy_pytorch.add_forward_model</span></code> that does this for us. This requires the CUQIpy forward model to have gradient defined.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CUQIpy test problem</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">probinfo</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">testproblem</span><span class="o">.</span><span class="n">Deconvolution1D</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;sinc&quot;</span><span class="p">,</span> <span class="n">use_legacy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+
+<span class="c1"># Add forward model to PyTorch automatic differentiation framework</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">cuqipy_pytorch</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_to_autograd</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="c1"># CUQIpy-PyTorch Bayesian model</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mf">0.05</span><span class="p">)</span>
+
+<span class="n">samples</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+
+<span class="n">samples</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot_ci</span><span class="p">(</span><span class="n">exact</span><span class="o">=</span><span class="n">probinfo</span><span class="o">.</span><span class="n">exactSolution</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 1000/1000 [01:47,  9.29it/s, step size=6.31e-02, acc. prob=0.873]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x191689c0260&gt;,
+ &lt;matplotlib.lines.Line2D at 0x191689c0560&gt;,
+ &lt;matplotlib.collections.PolyCollection at 0x19166687f50&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/f9b51b17684d85b439b32752f5d88e81b3920eb8c8f3e06f40e22404462655c4.png" src="../../../_images/f9b51b17684d85b439b32752f5d88e81b3920eb8c8f3e06f40e22404462655c4.png" />
+</div>
+</div>
+<p>The sampling is likely to take a bit longer because we do not utilize the structure of the problem.</p>
+<p>However, in the CUQIpy-PyTorch version, we are free to modify any expressions for the distributions.</p>
+<p>For example, suppose that we wanted to square the entries of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> before evaluating <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> for whatever reason, i.e. the model would be</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\mathbf{x} &amp;\sim \mathcal{N}(\mathbf{0}, 0.2 \mathbf{I}_n)\\
+\mathbf{y} &amp;\sim \mathcal{N}(\mathbf{A}(\mathbf{x}^2), 0.05 \mathbf{I}_m)
+\end{align*}
+\end{split}\]</div>
+<p>This would not be possible with CUQIpy, as we can see here</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CUQIpy test problem</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">probinfo</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">testproblem</span><span class="o">.</span><span class="n">Deconvolution1D</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;sinc&quot;</span><span class="p">,</span> <span class="n">use_legacy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+
+<span class="c1"># CUQIpy Bayesian model</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">A</span><span class="o">@</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+
+<span class="n">BP</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">BayesianProblem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">sample_posterior</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="c1"># Sampling fails because of the nonlinearity</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="c1"># The error message could be improved</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic sampler selection is a work-in-progress. !!!
+!!!       Always validate the computed results.        !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+&#39;NoneType&#39; object has no attribute &#39;domain_dim&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>However, using CUQIpy-PyTorch we can easily do this.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CUQIpy test problem</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">probinfo</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">testproblem</span><span class="o">.</span><span class="n">Deconvolution1D</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;sinc&quot;</span><span class="p">,</span> <span class="n">use_legacy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+
+<span class="c1"># Add forward model to PyTorch automatic differentiation framework</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">cuqipy_pytorch</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_to_autograd</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="c1"># CUQIpy-PyTorch Bayesian model</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">xp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">range_dim</span><span class="p">)</span><span class="o">*</span><span class="mf">0.05</span><span class="p">)</span>
+
+<span class="n">samples</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 1000/1000 [05:50,  2.85it/s, step size=1.68e-02, acc. prob=0.943]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that this is not going to be a good model for this problem, but only added for illustration purposes.</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="open-ended-exploration">
+<h1>5. Open-ended exploration <a class="anchor" id="open-ended-exploration"></a><a class="headerlink" href="#open-ended-exploration" title="Link to this heading">#</a></h1>
+<p>With the tools in place, try exploring the following:</p>
+<ul class="simple">
+<li><p>Try playing around with the expression for the forward model in the deconvolution problem. Can you enforce non-negativity on the entries of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>? You may want to switch the phantom to one with non-negative entries only.</p></li>
+<li><p>Try including other parameters such as noise or prior variance in the Bayesian model and sample it again. These need not be Gamma distributions, but can be any distribution you want.</p></li>
+<li><p>Try sampling from the eight schools model with different priors on <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\tau\)</span>.</p></li>
+<li><p>Try your own problem.</p></li>
+</ul>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "CUQI-DTU/CUQI-Book",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./chapter04/Plugins/CUQIpy-PyTorch"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../CUQIpy-FEniCS/poisson_2D_fenics.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../../chapter05/chapter05.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Chapter 5: More on CUQIpy technical details</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Hamiltonian Monte Carlo with CUQIpy-PyTorch</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives-of-this-notebook">Learning objectives of this notebook:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents:</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#why-hamiltonian-monte-carlo">1. Why Hamiltonian Monte Carlo? <a class="anchor" id="why-hmc"></a></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-basics-and-cuqipy-pytorch">2. PyTorch basics and CUQIpy-PyTorch <a class="anchor" id="pytorch-basics"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-primer">PyTorch primer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-computation">Gradient computation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuqipy-pytorch-distributions">CUQIpy-PyTorch distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#really-utilizing-the-power-of-automatic-differentiation">Really utilizing the power of automatic differentiation</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3. Hamiltonian Monte Carlo with CUQIpy-PyTorch <a class="anchor" id="hmc-cuqipy-pytorch"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eight-schools-model">Eight schools model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inverse-problems-with-cuqipy-pytorch">4. Bayesian inverse problems with CUQIpy-PyTorch <a class="anchor" id="bayesian-inverse-problems"></a></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#open-ended-exploration">5. Open-ended exploration <a class="anchor" id="open-ended-exploration"></a></a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CUQIpy developer team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+<a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a>
+</p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

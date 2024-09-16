@@ -1,0 +1,1217 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>X-ray CT using CUQIpy and CUQIpy-CIL plugin &#8212; Uncertainty Quantification in Inverse Problems with CUQIpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter04/Plugins/CUQIpy-CIL/demo_ct';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Solving PDE-based BIP using core CUQIpy" href="../../PDE/core_pde.html" />
+    <link rel="prev" title="Gibbs sampling" href="../../gibbs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo.png" class="logo__image only-light" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>
+    <script>document.write(`<img src="../../../_static/logo.png" class="logo__image only-dark" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../intro.html">
+                    Uncertainty Quantification in Inverse Problems with CUQIpy
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter01/chapter01.html">Chapter 1: Introduction to CUQIpy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/overview_of_cuqipy.html">Overview of CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/run_mini_book.html">Running the mini-book code examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/intro_example_short.html">Probably the simplest BIP in the world (the short story)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/intro_example_long.html">Probably the simplest BIP in the world (the long story)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter02/chapter02.html">Chapter 2: Problem examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter02/two_forward_problems.html">Two forward models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter02/two_target_distributions.html">Two target distributions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter03/chapter03.html">Chapter 3: Basics of CUQIpy for solving BIPs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_distributions.html">Introduction to distributions and basic sampling in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_forward_models.html">Forward models, data generation and forward UQ</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_bayesian_inverse_problems.html">Bayesian Inverse Problems</a></li>
+
+
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../chapter04.html">Chapter 4: Advanced use cases of CUQIpy</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../gibbs.html">Gibbs sampling</a></li>
+
+
+
+
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">X-ray CT using CUQIpy and CUQIpy-CIL plugin</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../../PDE/core_pde.html">Solving PDE-based BIP using core CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CUQIpy-FEniCS/poisson_2D_fenics.html">PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CUQIpy-PyTorch/hmc.html">Hamiltonian Monte Carlo with CUQIpy-PyTorch</a></li>
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter05/chapter05.html">Chapter 5: More on CUQIpy technical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter05/geometries_in_cuqipy.html">Geometry Objects: Representation, Parametrization, and Mapping</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter06/chapter06.html">Chapter 6: More theory on priors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter06/markov_random_fields.html">Markov random fields in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter06/entropy.html">Computing the entropy of a distribution, numerically</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter07/chapter07.html">Chapter 7: More theory on sampling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter07/more_theory_on_sampling_with_cuqipy.html">Sampling with CUQIpy: five little stories</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapter08/chapter08.html">Chapter 8: More resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/CUQI-DTU/CUQI-Book/blob/master/chapter04/Plugins/CUQIpy-CIL/demo_ct.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../_sources/chapter04/Plugins/CUQIpy-CIL/demo_ct.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>X-ray CT using CUQIpy and CUQIpy-CIL plugin</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">X-ray CT using CUQIpy and CUQIpy-CIL plugin</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ct-test-problems-in-the-cuqipy-cil-plugin">1. CT test problems in the CUQIpy-CIL plugin</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-and-solving-a-bayesian-inverse-problem">2. Setting up and solving a Bayesian inverse problem</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstructing-a-real-x-ray-ct-dataset-using-cil">3. Reconstructing a real X-ray CT dataset using CIL</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#wrapping-the-real-data-into-cuqipy">4. Wrapping the real data into CUQIpy</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#open-ended-exploration">5. Open-ended exploration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ideas-for-exploration">Ideas for exploration:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="x-ray-ct-using-cuqipy-and-cuqipy-cil-plugin">
+<h1>X-ray CT using CUQIpy and CUQIpy-CIL plugin<a class="headerlink" href="#x-ray-ct-using-cuqipy-and-cuqipy-cil-plugin" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://www.ccpi.ac.uk/cil">The Core Imaging Library (CIL)</a> is an open-source python library for processing and reconstruction of CT data (and other inverse problems).</p>
+<p>The CUQIpy-CIL plugin wraps CIL tools into CUQIpy, so that CUQIpy can be used to carry out UQ analysis on CT problems.</p>
+<p>This notebook first demonstrates how to use the test problems provided by the CUQIpy-CIL plugin and set up and run a CUQIpy UQ analysis.</p>
+<p>Next a real X-ray CT data set is loaded in, analyzed and reconstructed using CIL.</p>
+<p>Finally the real data case is set up using the CUQIpy-CIL plugin for UQ analysis.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<p>Make sure you have the latest version of CIL and CUQIpy-CIL installed. See install instructions <a class="reference external" href="https://github.com/CUQI-DTU/CUQIpy-CIL">here</a></p>
+<p>The notebook assumes a general familiarity with CT.</p>
+<div style="border: 2px solid #FFB74D; background-color: #FFF3E0; border-radius: 8px; padding: 10px; font-family: Arial, sans-serif; color: #333; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); max-width: 750px; margin: 0 auto;">
+  <strong style="color: #E65100;">⚠️ Note:</strong> 
+<ul class="simple">
+<li><p>This notebook was run on some machine and not using github actions for this book. To run this notebook on your machine, you need to have <a class="reference external" href="https://github.com/CUQI-DTU/CUQIpy-CIL">CUQIpy-CIL installed</a>.</p></li>
+<li><p>This notebook uses MCMC samplers from the new <code>cuqi.experimental.mcmc</code> module, which are expected to become the default soon. Check out the <a href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc.html#module-cuqi.experimental.mcmc">documentation</a> for more details.</p></li>
+</ul>
+</div></section>
+<section id="ct-test-problems-in-the-cuqipy-cil-plugin">
+<h2>1. CT test problems in the CUQIpy-CIL plugin<a class="headerlink" href="#ct-test-problems-in-the-cuqipy-cil-plugin" title="Link to this heading">#</a></h2>
+<p>We first load the tools we need, including the CUQIpy-CIL plugin <code class="docutils literal notranslate"><span class="pre">cuqipy_cil</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cuqi</span>
+<span class="kn">import</span> <span class="nn">cuqipy_cil</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># For the moment, we stick to CPU only mode using astra</span>
+<span class="n">cuqipy_cil</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">PROJECTION_BACKEND</span> <span class="o">=</span> <span class="s2">&quot;astra&quot;</span>
+<span class="n">cuqipy_cil</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">PROJECTION_BACKEND_DEVICE</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Load a CT forward model and data from testproblem, which can be configured. A fan beam test problem is also available.</p>
+<p>We stick to a fairly small image size to reduce the computational time for this demo assuming most users will be running this on a laptop with no GPU.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">cuqipy_cil</span><span class="o">.</span><span class="n">testproblem</span><span class="o">.</span><span class="n">ParallelBeam2D</span><span class="p">(</span>
+    <span class="n">im_size</span><span class="o">=</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
+    <span class="n">det_count</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">angles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
+    <span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;shepp-logan&quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We extract and display the exact solution image, to be reconstructed:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_exact</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">exactSolution</span>
+<span class="n">x_exact</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.image.AxesImage at 0x16845c91310&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/4d8a9f0e3e15aaf05f3e5d734ef6347335a7b02fafa929111597a818b09f20c4.png" src="../../../_images/4d8a9f0e3e15aaf05f3e5d734ef6347335a7b02fafa929111597a818b09f20c4.png" />
+</div>
+</div>
+<p>The data is a sinogram, which we can plot:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_data</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.image.AxesImage at 0x16847005c40&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/c30d6cde6d18711c5d86aeb6ab23cbe3b2b65e8a11a74e7abf531700924cf352.png" src="../../../_images/c30d6cde6d18711c5d86aeb6ab23cbe3b2b65e8a11a74e7abf531700924cf352.png" />
+</div>
+</div>
+<p>Instead of loading the premade noisy sinogram from the test problem we could also have generated it ourselves by forward projecting it using the forward model (and adding noise):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">A</span><span class="nd">@x_exact</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.image.AxesImage at 0x168471381d0&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/2302edab98bf6b2f8d9d1f47160884491a6597c0eb2d35aaea03872a6c442b76.png" src="../../../_images/2302edab98bf6b2f8d9d1f47160884491a6597c0eb2d35aaea03872a6c442b76.png" />
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="setting-up-and-solving-a-bayesian-inverse-problem">
+<h1>2. Setting up and solving a Bayesian inverse problem<a class="headerlink" href="#setting-up-and-solving-a-bayesian-inverse-problem" title="Link to this heading">#</a></h1>
+<p>As in previous notebooks we can set up a Bayesian model, assuming a Gaussian prior for the image and additive Gaussian noise:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># x ~ N(0, 1)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="mf">0.05</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>              <span class="c1"># y ~ N(Ax, 0.05^2)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>From the two distributions we can either set up a JointDistribution, condition on the data and sample the posterior, or we can use the higher-level interface BayesianProblem which does all of that for us, including selecting a suitable sampler:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">BP</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">BayesianProblem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">BP</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BayesianProblem with target: 
+ Posterior(
+    Equation:
+	 p(x|y) ∝ L(x|y)p(x)
+    Densities:
+	y ~ CUQI Gaussian Likelihood function. Parameters [&#39;x&#39;].
+ 	x ~ CUQI Gaussian.
+ )
+</pre></div>
+</div>
+</div>
+</div>
+<p>Sample from the posterior (this will take a few minutes depending on your hardware):</p>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">sample_posterior</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="n">experimental</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic sampler selection is a work-in-progress. !!!
+!!!       Always validate the computed results.        !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!  Using samplers from cuqi.experimental.mcmc  !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Using cuqi.experimental.mcmc LinearRTO sampler.
+burn-in: 20%
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup: 100%|██████████| 60/60 [00:14&lt;00:00,  4.13it/s]
+Sample: 100%|██████████| 300/300 [01:14&lt;00:00,  4.03it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Elapsed time: 88.88283324241638
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Analyze the samples:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="o">.</span><span class="n">exactSolution</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Exact solution&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">y_data</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Data&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">samples</span><span class="o">.</span><span class="n">plot_mean</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Posterior mean&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">samples</span><span class="o">.</span><span class="n">plot_std</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Posterior standard deviation&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/6ccf11e96d2c1c063e9055b544867bd141aea9d59d1d628f91793afaa9e918c8.png" src="../../../_images/6ccf11e96d2c1c063e9055b544867bd141aea9d59d1d628f91793afaa9e918c8.png" />
+<img alt="../../../_images/146d5173a6fcc21e23e670f7939d1f100bb2b64785b802b6ff7adf93b457c020.png" src="../../../_images/146d5173a6fcc21e23e670f7939d1f100bb2b64785b802b6ff7adf93b457c020.png" />
+<img alt="../../../_images/c1dcf9c9cb309e73508593658e1efc44f0f55c07bde4d5b6222744dec7c0c7d5.png" src="../../../_images/c1dcf9c9cb309e73508593658e1efc44f0f55c07bde4d5b6222744dec7c0c7d5.png" />
+<img alt="../../../_images/82eb352a5078635187a83444bee48933ea9c6453a07750ff61e2194c98dfd63e.png" src="../../../_images/82eb352a5078635187a83444bee48933ea9c6453a07750ff61e2194c98dfd63e.png" />
+</div>
+</div>
+<p>Try instead of a Gaussian prior with an edge-preserving Cauchy difference prior:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">CMRF</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">domain_geometry</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="mf">0.05</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>              <span class="c1"># y ~ N(Ax, 0.05^2)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">BP_C</span> <span class="o">=</span> <span class="n">cuqi</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">BayesianProblem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">BP_C</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BayesianProblem with target: 
+ Posterior(
+    Equation:
+	 p(x|y) ∝ L(x|y)p(x)
+    Densities:
+	y ~ CUQI Gaussian Likelihood function. Parameters [&#39;x&#39;].
+ 	x ~ CUQI CMRF.
+ )
+</pre></div>
+</div>
+</div>
+</div>
+<p>Sampling from this posterior may take a bit longer.</p>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_C</span> <span class="o">=</span> <span class="n">BP_C</span><span class="o">.</span><span class="n">sample_posterior</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="n">experimental</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic sampler selection is a work-in-progress. !!!
+!!!       Always validate the computed results.        !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!  Using samplers from cuqi.experimental.mcmc  !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Using cuqi.experimental.mcmc No-U-Turn (NUTS) sampler.
+burn-in: 20%
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup: 100%|██████████| 60/60 [00:17&lt;00:00,  3.49it/s]
+Sample: 100%|██████████| 300/300 [00:49&lt;00:00,  6.09it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Elapsed time: 66.85000872612
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_C</span><span class="o">.</span><span class="n">plot_mean</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Posterior mean&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">samples_C</span><span class="o">.</span><span class="n">plot_std</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Posterior standard deviation&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/f4b11cf06e728e7f0c0026c0676babbd6ab83f4dca327af8b2a82e2f77d701a3.png" src="../../../_images/f4b11cf06e728e7f0c0026c0676babbd6ab83f4dca327af8b2a82e2f77d701a3.png" />
+<img alt="../../../_images/f1b24fff8b3d9f59fac02357bd00b33b353d47895ba917661599371e5afa65a2.png" src="../../../_images/f1b24fff8b3d9f59fac02357bd00b33b353d47895ba917661599371e5afa65a2.png" />
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="reconstructing-a-real-x-ray-ct-dataset-using-cil">
+<h1>3. Reconstructing a real X-ray CT dataset using CIL<a class="headerlink" href="#reconstructing-a-real-x-ray-ct-dataset-using-cil" title="Link to this heading">#</a></h1>
+<p>The last part of this notebook focuses on a real X-ray CT data set. The data set is of a Lotus root and is provided by the Finnish Inverse Problems Society. We will first show how to load in and explore this data and set it up for reconstruction using CIL (without CUQIpy). Afterwards it will be shown how to wrap this into CUQIpy and then the task is to carry out some UQ analysis for this data using CUQIpy.</p>
+<p>We first load the tools we are going to need:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">cil.framework</span> <span class="kn">import</span> <span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span>
+<span class="kn">from</span> <span class="nn">cil.utilities.display</span> <span class="kn">import</span> <span class="n">show2D</span><span class="p">,</span> <span class="n">show_geometry</span>
+<span class="kn">from</span> <span class="nn">cil.recon</span> <span class="kn">import</span> <span class="n">FDK</span>
+<span class="kn">from</span> <span class="nn">cil.plugins.astra.processors</span> <span class="kn">import</span> <span class="n">FBP</span>
+<span class="kn">from</span> <span class="nn">cil.processors</span> <span class="kn">import</span> <span class="n">Binner</span>
+<span class="kn">from</span> <span class="nn">cil.plugins.astra</span> <span class="kn">import</span> <span class="n">ProjectionOperator</span>
+<span class="kn">from</span> <span class="nn">cil.optimisation.algorithms</span> <span class="kn">import</span> <span class="n">CGLS</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\nabr\anaconda3\envs\cil\Lib\site-packages\tqdm\auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div>
+</div>
+</div>
+</div>
+<p>Go to <a class="reference external" href="https://zenodo.org/record/1254204/">https://zenodo.org/record/1254204/</a> and download the file sinogram.mat to the same directory as this notebook. This is an X-ray data set of a Lotus root, see <a class="reference external" href="https://arxiv.org/pdf/1609.07299.pdf">https://arxiv.org/pdf/1609.07299.pdf</a> for details.</p>
+<p>The data can be loaded and cropped according to instructions in the original code accompanying the data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sinogram</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;sinogram.mat&#39;</span><span class="p">)[</span><span class="s1">&#39;sinogram&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+<span class="n">sinogram</span> <span class="o">=</span> <span class="n">sinogram</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+<span class="n">sinogram</span> <span class="o">=</span> <span class="n">sinogram</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">360</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2221</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sinogram</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(360, 2221)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The parameters needed to specify the scan geometry are provided in the orignal code <code class="docutils literal notranslate"><span class="pre">Lotus_FBP.m</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_angles</span> <span class="o">=</span> <span class="n">sinogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">num_dets</span> <span class="o">=</span> <span class="n">sinogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">source_center</span> <span class="o">=</span> <span class="mi">54</span>
+<span class="n">source_detector</span> <span class="o">=</span> <span class="mi">63</span>
+<span class="n">det_pixel_size</span> <span class="o">=</span> <span class="mi">12</span><span class="o">/</span><span class="mi">2240</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We specify the projection angles:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="n">num_angles</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We create using CIL commands the <code class="docutils literal notranslate"><span class="pre">AcquisitionGeometry</span></code> representing the scan geometry:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ag_full</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">AcquisitionGeometry</span><span class="o">.</span><span class="n">create_Cone2D</span><span class="p">(</span>
+        <span class="n">source_position</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">source_center</span><span class="p">],</span>
+        <span class="n">detector_position</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">source_detector</span> <span class="o">-</span> <span class="n">source_center</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">set_panel</span><span class="p">(</span><span class="n">num_pixels</span><span class="o">=</span><span class="n">num_dets</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="n">det_pixel_size</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_angles</span><span class="p">(</span><span class="n">angles</span><span class="o">=-</span><span class="n">angles</span><span class="p">,</span> <span class="n">angle_unit</span><span class="o">=</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And put it in the CIL data structure <code class="docutils literal notranslate"><span class="pre">AcquisitionData</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_full</span> <span class="o">=</span> <span class="n">AcquisitionData</span><span class="p">(</span><span class="n">sinogram</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">ag_full</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can take a look at the data by the CIL plot show2D:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show2D</span><span class="p">(</span><span class="n">data_full</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/a93daf8cc34b884f4715778da689fbfaa809711eb041fdde193b3939e8268bfb.png" src="../../../_images/a93daf8cc34b884f4715778da689fbfaa809711eb041fdde193b3939e8268bfb.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;cil.utilities.display.show2D at 0x1684726ef30&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can take a look at the scan geometry using a CIL plot:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show_geometry</span><span class="p">(</span><span class="n">ag_full</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/d7ad40b9461254c4ea438b6bcf0fdb2ba1ffb096e9e49242b80067fd05bca283.png" src="../../../_images/d7ad40b9461254c4ea438b6bcf0fdb2ba1ffb096e9e49242b80067fd05bca283.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;cil.utilities.display.show_geometry at 0x168471f9d30&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Before proceeding we provide the opportunity to downsample the data to make experiments run faster. Choose an integer factor for the angles and the horizontal detector pixel dimensions:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds_angle</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">ds_horizontal</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Binner</span><span class="p">(</span><span class="n">roi</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;angle&#39;</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mi">360</span><span class="p">,</span><span class="n">ds_angle</span><span class="p">),</span><span class="s1">&#39;horizontal&#39;</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2221</span><span class="p">,</span><span class="n">ds_horizontal</span><span class="p">)})(</span><span class="n">data_full</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of dimensions: 2
+Shape: (360, 222)
+Axis labels: (&#39;angle&#39;, &#39;horizontal&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>We extract the acquisition geometry of the downsampled data and can specify the corresponding geometry of the image to be reconstructed onto, here the default choice:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">geometry</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D Cone-beam tomography
+System configuration:
+	Source position: [  0., -54.]
+	Rotation axis position: [0., 0.]
+	Detector position: [-2.67857143e-03,  9.00000000e+00]
+	Detector direction x: [1., 0.]
+Panel configuration:
+	Number of pixels: [222   1]
+	Pixel size: [0.05357143 0.00535714]
+	Pixel origin: bottom-left
+Channel configuration:
+	Number of channels: 1
+Acquisition description:
+	Number of positions: 360
+	Angles 0-9 in degrees: [-0., -1., -2., -3., -4., -5., -6., -7., -8., -9.]
+	Angles 350-359 in degrees: [-350., -351., -352., -353., -354., -355., -356., -357., -358., -359.]
+	Full angular array can be accessed with acquisition_data.geometry.angles
+Distances in units: units distance
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ig</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">get_ImageGeometry</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of channels: 1
+channel_spacing: 1.0
+voxel_num : x222,y222
+voxel_size : x0.04591836734693878,y0.04591836734693878
+center : x0,y0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can use CIL reconstruction tools. We specify the CIL forward model and use the CGLS algorithm for a basic early-stopping least squares reconstruction:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">AP</span> <span class="o">=</span> <span class="n">ProjectionOperator</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cgls</span> <span class="o">=</span> <span class="n">CGLS</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="n">AP</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_iteration</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cgls</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 30/30 [00:11&lt;00:00,  2.53it/s, objective=64.8]  
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can show the reconstruction, which is held in the reconstruction algorithm’s <code class="docutils literal notranslate"><span class="pre">solution</span></code> attribute, using the CIL <code class="docutils literal notranslate"><span class="pre">show2D</span></code> plot:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show2D</span><span class="p">(</span><span class="n">cgls</span><span class="o">.</span><span class="n">solution</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/71c0c1bf63426f503c353e17985602d47c836cd9b6d671f5f44f1a21ea389807.png" src="../../../_images/71c0c1bf63426f503c353e17985602d47c836cd9b6d671f5f44f1a21ea389807.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;cil.utilities.display.show2D at 0x1684a02c5c0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="wrapping-the-real-data-into-cuqipy">
+<h1>4. Wrapping the real data into CUQIpy<a class="headerlink" href="#wrapping-the-real-data-into-cuqipy" title="Link to this heading">#</a></h1>
+<p>The previous section demonstrated how to reconstruct the data using CIL. This section explores how to run UQ on it using CUQIpy. We need a few CUQIpy tools:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cuqipy_cil.model</span> <span class="kn">import</span> <span class="n">CILModel</span>
+<span class="kn">from</span> <span class="nn">cuqi.array</span> <span class="kn">import</span> <span class="n">CUQIarray</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The CIL acquisition and image geometry fully specify the imaging setup and we can create a CUQIpy CIL forward model directly from these:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CILModel</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">ig</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI CILModel: Image2D(49284,) -&gt; Image2D(79920,).
+    Forward parameters: [&#39;x&#39;].
+</pre></div>
+</div>
+</div>
+</div>
+<p>Instead of using CIL data structures for the sinogram data we need to use the CUQIpy data structure CUQIarray, where we provide its geometry from the model’s range geometry:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_cuqi</span> <span class="o">=</span> <span class="n">CUQIarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">is_par</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">range_geometry</span><span class="p">)</span>
+<span class="n">data_cuqi</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQIarray: NumPy array wrapped with geometry.
+---------------------------------------------
+
+Geometry:
+ Image2D(79920,)
+
+Parameters:
+ True
+
+Array:
+CUQIarray([0.05546827, 0.05233207, 0.05633232, ..., 0.0506965 ,
+           0.05168361, 0.04902546], dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<p>We now have all we need to start using CUQIpy for UQ analyzing the data. To demonstrate this, we can see if the CUQIpy plotting is available for the data_cuqi:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_cuqi</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.image.AxesImage at 0x1684a16b3e0&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/ed2acc42c35c05c73c10b76d3eaaf7546c2de461d8ef939f7a664146011ae267.png" src="../../../_images/ed2acc42c35c05c73c10b76d3eaaf7546c2de461d8ef939f7a664146011ae267.png" />
+</div>
+</div>
+<p>As we hoped, this works and gives an Image2D type plot of the sinogram.</p>
+<p>We can check that the CUQIpy forward model is working, for example by applying its adjoint operation (corresponding to backprojection) onto the CUQIarray holding the sinogram:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_backprojected</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">T</span><span class="nd">@data_cuqi</span>
+<span class="n">data_backprojected</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQIarray: NumPy array wrapped with geometry.
+---------------------------------------------
+
+Geometry:
+ Image2D(49284,)
+
+Parameters:
+ True
+
+Array:
+CUQIarray([9.061228, 9.090968, 9.260093, ..., 9.96744 , 9.9063  ,
+           9.854515], dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<p>And plot the results:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_backprojected</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.image.AxesImage at 0x1684a340620&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/9317193c885ccca4856e44bf1de4ebb601e5d4a82ce94a076ef691760c0827c8.png" src="../../../_images/9317193c885ccca4856e44bf1de4ebb601e5d4a82ce94a076ef691760c0827c8.png" />
+</div>
+</div>
+<p>As expected a plain backprojection of the sinogram gives a blurry image in the reconstruction domain.</p>
+<section id="open-ended-exploration">
+<h2>5. Open-ended exploration<a class="headerlink" href="#open-ended-exploration" title="Link to this heading">#</a></h2>
+<p>With the tools in place, you can now explore UQ analysis of the data set, by use of the CUQIpy tools you have met so far.</p>
+<section id="ideas-for-exploration">
+<h3>Ideas for exploration:<a class="headerlink" href="#ideas-for-exploration" title="Link to this heading">#</a></h3>
+<p>(Can be either for the test problem or the real data)</p>
+<ol class="arabic simple">
+<li><p>Set up a few-projection case, for example 40 projections (over 180 degrees for parallel-beam or 360 degrees for fan-beam). Explore different priors.</p></li>
+<li><p>Set up a limited angle case, for example instead of full 180-degree data, use 135, 90 or even 45 degree data, and explore different the effect of different priors on the solution and its uncertainty.</p></li>
+<li><p>Try with a smooth phantom instead of a piecewise constant (test problem only)</p></li>
+<li><p>Infer noise level and/or prior precision through Gibbs.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Your code here</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "CUQI-DTU/CUQI-Book",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./chapter04/Plugins/CUQIpy-CIL"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../../gibbs.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Gibbs sampling</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../PDE/core_pde.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Solving PDE-based BIP using core CUQIpy</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">X-ray CT using CUQIpy and CUQIpy-CIL plugin</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ct-test-problems-in-the-cuqipy-cil-plugin">1. CT test problems in the CUQIpy-CIL plugin</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-and-solving-a-bayesian-inverse-problem">2. Setting up and solving a Bayesian inverse problem</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstructing-a-real-x-ray-ct-dataset-using-cil">3. Reconstructing a real X-ray CT dataset using CIL</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#wrapping-the-real-data-into-cuqipy">4. Wrapping the real data into CUQIpy</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#open-ended-exploration">5. Open-ended exploration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ideas-for-exploration">Ideas for exploration:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CUQIpy developer team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+<a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a>
+</p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

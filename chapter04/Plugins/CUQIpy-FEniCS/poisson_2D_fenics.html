@@ -1,0 +1,1418 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin &#8212; Uncertainty Quantification in Inverse Problems with CUQIpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"dd": "\\mathrm{d}", "abs": ["\\left\\vert#1\\right\\vert", 1], "ve": ["\\bm{#1}", 1], "mat": ["\\mathbf{#1}", 1], "N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"], "bm": ["{\\boldsymbol #1}", 1]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter04/Plugins/CUQIpy-FEniCS/poisson_2D_fenics';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Hamiltonian Monte Carlo with CUQIpy-PyTorch" href="../CUQIpy-PyTorch/hmc.html" />
+    <link rel="prev" title="Solving PDE-based BIP using core CUQIpy" href="../../PDE/core_pde.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo.png" class="logo__image only-light" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>
+    <script>document.write(`<img src="../../../_static/logo.png" class="logo__image only-dark" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../intro.html">
+                    Uncertainty Quantification in Inverse Problems with CUQIpy
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter01/chapter01.html">Chapter 1: Introduction to CUQIpy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/overview_of_cuqipy.html">Overview of CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/run_mini_book.html">Running the mini-book code examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/intro_example_short.html">Probably the simplest BIP in the world (the short story)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter01/intro_example_long.html">Probably the simplest BIP in the world (the long story)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter02/chapter02.html">Chapter 2: Problem examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter02/two_forward_problems.html">Two forward models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter02/two_target_distributions.html">Two target distributions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter03/chapter03.html">Chapter 3: Basics of CUQIpy for solving BIPs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_distributions.html">Introduction to distributions and basic sampling in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_forward_models.html">Forward models, data generation and forward UQ</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter03/basics_bayesian_inverse_problems.html">Bayesian Inverse Problems</a></li>
+
+
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../chapter04.html">Chapter 4: Advanced use cases of CUQIpy</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../gibbs.html">Gibbs sampling</a></li>
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../CUQIpy-CIL/demo_ct.html">X-ray CT using CUQIpy and CUQIpy-CIL plugin</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../../PDE/core_pde.html">Solving PDE-based BIP using core CUQIpy</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CUQIpy-PyTorch/hmc.html">Hamiltonian Monte Carlo with CUQIpy-PyTorch</a></li>
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter05/chapter05.html">Chapter 5: More on CUQIpy technical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter05/geometries_in_cuqipy.html">Geometry Objects: Representation, Parametrization, and Mapping</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter06/chapter06.html">Chapter 6: More theory on priors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter06/markov_random_fields.html">Markov random fields in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter06/entropy.html">Computing the entropy of a distribution, numerically</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../chapter07/chapter07.html">Chapter 7: More theory on sampling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../chapter07/more_theory_on_sampling_with_cuqipy.html">Sampling with CUQIpy: five little stories</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapter08/chapter08.html">Chapter 8: More resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/CUQI-DTU/CUQI-Book/blob/master/chapter04/Plugins/CUQIpy-FEniCS/poisson_2D_fenics.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../../../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../_sources/chapter04/Plugins/CUQIpy-FEniCS/poisson_2D_fenics.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives-of-this-notebook">Learning objectives of this notebook:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-required-libraries-and-classes">Import required libraries and classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-a-fenics-based-poisson-problem">1. Building a FEniCS based Poisson problem <a class="anchor" id="PDEproblem"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-discretization">The discretization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-mesh">1.1. Set up mesh</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-function-spaces">1.2. Set up function spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-dirichlet-boundary-conditions">1.3. Set up Dirichlet boundary conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-source-term">1.4. Set up source term</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-pde-variational-form">1.5. Set up PDE variational form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-cuqipy-pde-object">1.6 Create CUQIpy PDE object</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-and-solving-the-bayesian-inverse-problem-in-cuqipy">2. Building and solving the Bayesian inverse problem in CUQIpy <a class="anchor" id="Bayesian_problem"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-domain-geometry">2.1. Create domain geometry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-range-geometry">2.2. Create range geometry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-cuqi-forward-model">2.3. Create cuqi forward model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-prior">2.4. Create prior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-exact-solution-and-exact-data">2.5. Create exact solution and exact data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-likelihood-and-data">2.6. Create likelihood and data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-posterior">2.7. Create the posterior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-the-posterior">2.8. Sample the posterior</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-gradient-based-sampler">3. Using gradient-based sampler <a class="anchor" id="gradient_sampling"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-chain-rule">3.1. The chain rule</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-the-adjoint-problem-boundary-conditions">3.1 Set the adjoint problem boundary conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#check-the-gradient-correctness-at-an-input-x-mathrm-test">3.2 Check the gradient correctness at an input <span class="math notranslate nohighlight">\(x_\mathrm{test}\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-gradient-based-sampler-nuts">3.3. Use gradient based sampler (NUTS)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#try-yourself-optional">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="pde-based-bip-using-cuqipy-and-cuqipy-fenics-plugin">
+<h1>PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin<a class="headerlink" href="#pde-based-bip-using-cuqipy-and-cuqipy-fenics-plugin" title="Link to this heading">#</a></h1>
+<p>Here we build a Bayesian inverse problem to infer the conductivity in a 2D unit-square domain modelled by the Poisson equation (applications include EIT problems).</p>
+<p>The PDE model is built using FEniCS, then we use CUQIpy-FEniCS to wrap the PDE model to interface it with CUQIpy. We use CUQIpy samplers to solve the PDE-based Bayesian problem.</p>
+<section id="learning-objectives-of-this-notebook">
+<h2>Learning objectives of this notebook:<a class="headerlink" href="#learning-objectives-of-this-notebook" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Build a FEniCS-based Poisson problem</p></li>
+<li><p>Build and solve the corresponding PDE-based Bayesian problem in CUQIpy</p>
+<ul>
+<li><p>Use Matern covariance to specify the prior</p></li>
+<li><p>Use pCN sampler</p></li>
+</ul>
+</li>
+<li><p>Use gradient-based sampler</p>
+<ul>
+<li><p>Identify the chain rule needed to compute the gradient of the log-likelihood</p></li>
+<li><p>Use NUTS sampler</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#PDEproblem"><span class="xref myst">Building a FEniCS based Poisson problem</span></a></p></li>
+<li><p><a class="reference internal" href="#Bayesian_problem"><span class="xref myst">Building and solving the PDE-based Bayesian problem in CUQIpy</span></a></p></li>
+<li><p><a class="reference internal" href="#gradient_sampling"><span class="xref myst">Using gradient-based sampler</span></a></p></li>
+</ol>
+<div style="border: 2px solid #FFB74D; background-color: #FFF3E0; border-radius: 8px; padding: 10px; font-family: Arial, sans-serif; color: #333; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); max-width: 750px; margin: 0 auto;">
+  <strong style="color: #E65100;">⚠️ Note:</strong> 
+<ul class="simple">
+<li><p>This notebook is under the <a class="reference download internal" download="" href="../../../_downloads/6b8d8378c6d51f30fd60ba9cbb077682/LICENSE"><span class="xref download myst">GPLv3.0 license</span></a>.</p></li>
+<li><p>This notebook was run on a machine locally and not using github actions for this book. To run this notebook on your machine, you need to have <a class="reference external" href="https://github.com/CUQI-DTU/CUQIpy-FEniCS">CUQIpy-FEniCS installed</a>.</p></li>
+<li><p>This notebook uses MCMC samplers from the new <code>cuqi.experimental.mcmc</code> module, which are expected to become the default soon. Check out the <a href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc.html#module-cuqi.experimental.mcmc">documentation</a> for more details.</p></li>
+</ul>
+</div></section>
+<section id="import-required-libraries-and-classes">
+<h2>Import required libraries and classes<a class="headerlink" href="#import-required-libraries-and-classes" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">dolfin</span> <span class="k">as</span> <span class="nn">dl</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">cuqi.model</span> <span class="kn">import</span> <span class="n">PDEModel</span>
+<span class="kn">from</span> <span class="nn">cuqi.distribution</span> <span class="kn">import</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">Posterior</span>
+<span class="kn">from</span> <span class="nn">cuqi.array</span> <span class="kn">import</span> <span class="n">CUQIarray</span>
+<span class="kn">from</span> <span class="nn">cuqipy_fenics.pde</span> <span class="kn">import</span> <span class="n">SteadyStateLinearFEniCSPDE</span>
+<span class="kn">from</span> <span class="nn">cuqipy_fenics.geometry</span> <span class="kn">import</span> <span class="n">FEniCSContinuous</span><span class="p">,</span> <span class="n">MaternKLExpansion</span>
+<span class="kn">from</span> <span class="nn">cuqi.experimental.mcmc</span> <span class="kn">import</span> <span class="n">NUTS</span><span class="p">,</span> <span class="n">PCN</span>
+<span class="kn">import</span> <span class="nn">cuqipy_fenics</span>
+<span class="n">ufl</span> <span class="o">=</span> <span class="n">cuqipy_fenics</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">_LazyUFLLoader</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="building-a-fenics-based-poisson-problem">
+<h2>1. Building a FEniCS based Poisson problem <a class="anchor" id="PDEproblem"></a><a class="headerlink" href="#building-a-fenics-based-poisson-problem" title="Link to this heading">#</a></h2>
+<p>In this section, we use FEniCS python library to build a PDE model.</p>
+<p>The PDE model we consider here is a 2D steady-state problem (Poisson):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+ -\nabla \cdot \left(\kappa(\xi) \nabla u(\xi)\right) &amp;= f(\xi) \;\;\;\;\xi=[\xi^1, \xi^2]^\mathrm{T} \in (0,1)\times(0,1),\\
+u(\xi)&amp;=0 \;\;\;\;\mathrm{on}\; \xi^1=0\\
+u(\xi)&amp;=0 \;\;\;\;\mathrm{on}\; \xi^1=1 \\
+\kappa(\xi)\nabla u(\xi)\cdot n&amp;=0 \;\;\;\;\mathrm{on}\; \xi^2=0 \\
+\kappa(\xi)\nabla u(\xi)\cdot n&amp;=0 \;\;\;\;\mathrm{on}\; \xi^2=1 
+\end{align*}
+\end{split}\]</div>
+<ul class="simple">
+<li><p>where <span class="math notranslate nohighlight">\(\kappa(\xi)\)</span> is the conductivity, <span class="math notranslate nohighlight">\(u(\xi)\)</span> is the PDE solution (potential), <span class="math notranslate nohighlight">\(f(\xi)\)</span> is the source term.</p></li>
+<li><p>We use the parameterization <span class="math notranslate nohighlight">\(\kappa(\xi) = e^{m(\xi)}\)</span>, to ensure positivity of the inferred conductivity (more on this later).</p></li>
+<li><p>We denote the discretized system that we need to solve as
+<span class="math notranslate nohighlight">\(\mathbf{A}(\mathbf{m})\mathbf{U} = \mathbf{F}\)</span></p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is the discretized diffusion differential operator</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{m}\)</span> is the discretized unknown parameter (log conductivity)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{U}\)</span> is the discretized solution (the potential)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{F}\)</span> is the discretized RHS (the source term)</p></li>
+</ul>
+</li>
+</ul>
+<section id="the-discretization">
+<h3>The discretization<a class="headerlink" href="#the-discretization" title="Link to this heading">#</a></h3>
+<p>We use finite element discretization of the model above where the solution and the parameters are approximated in a second and first order Lagrange polynomial space, respectively.</p>
+<p>Using finite element formulation requires building the weak form of the PDE. To formulate the weak form, we multiply the PDE by a test function and integrate by parts and substitute the Neumann boundary conditions above (the last two equations above).</p>
+<p>For formulating the weak form, see for example <a class="reference external" href="https://en.wikiversity.org/wiki/Finite_elements/Weak_form_of_Poisson_equation">this reference</a>.</p>
+</section>
+<section id="set-up-mesh">
+<h3>1.1. Set up mesh<a class="headerlink" href="#set-up-mesh" title="Link to this heading">#</a></h3>
+<p>We create a 2D FEniCS mesh (unit square mesh) on which the finite element solution is discretized.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_ksi_1</span> <span class="o">=</span> <span class="mi">12</span> <span class="c1"># number of vertices on the ksi_1 dimension</span>
+<span class="n">n_ksi_2</span> <span class="o">=</span> <span class="mi">12</span> <span class="c1"># number of vertices on the ksi_2 dimension</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">UnitSquareMesh</span><span class="p">(</span><span class="n">n_ksi_1</span><span class="p">,</span> <span class="n">n_ksi_2</span><span class="p">)</span> <span class="c1"># create FEniCS mesh</span>
+<span class="n">dl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x195302d70&gt;,
+ &lt;matplotlib.lines.Line2D at 0x195302f20&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/532ca10c3780ba593422f3e616133d17a50250aa6df93bceee42728999977f00.png" src="../../../_images/532ca10c3780ba593422f3e616133d17a50250aa6df93bceee42728999977f00.png" />
+</div>
+</div>
+</section>
+<section id="set-up-function-spaces">
+<h3>1.2. Set up function spaces<a class="headerlink" href="#set-up-function-spaces" title="Link to this heading">#</a></h3>
+<p>We define the function spaces on which the PDE solution <span class="math notranslate nohighlight">\(u\)</span> and the quantity we want to quantify (log conductivity <span class="math notranslate nohighlight">\(m\)</span>) are discretized. The function spaces are, respectively, second order Lagrange polynomial space and first order Lagrange polynomial space.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solution_function_space</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;Lagrange&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># function space for solution u</span>
+<span class="n">parameter_function_space</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;Lagrange&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># function space for parameter m</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="set-up-dirichlet-boundary-conditions">
+<h3>1.3. Set up Dirichlet boundary conditions<a class="headerlink" href="#set-up-dirichlet-boundary-conditions" title="Link to this heading">#</a></h3>
+<p>We create the Dirichlet boundary conditions:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+u(\xi)&amp;=0 \;\;\;\;\mathrm{on}\; \xi^1=0\\
+u(\xi)&amp;=0 \;\;\;\;\mathrm{on}\; \xi^1=1 \\
+\end{align*}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function (where do we have Dirichlet BC)</span>
+<span class="k">def</span> <span class="nf">u_boundary</span><span class="p">(</span><span class="n">ksi</span><span class="p">,</span> <span class="n">on_boundary</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">on_boundary</span> <span class="ow">and</span> <span class="p">(</span> <span class="n">ksi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dl</span><span class="o">.</span><span class="n">DOLFIN_EPS</span> <span class="ow">or</span> <span class="n">ksi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">dl</span><span class="o">.</span><span class="n">DOLFIN_EPS</span><span class="p">)</span>
+
+<span class="c1"># Expression (what is the value on these Dirichlet BC)</span>
+<span class="n">dirichlet_bc_expr</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># FEniCS Dirichlet BC Object</span>
+<span class="n">dirichlet_bc</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span><span class="n">solution_function_space</span><span class="p">,</span>
+                              <span class="n">dirichlet_bc_expr</span><span class="p">,</span>
+                              <span class="n">u_boundary</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="set-up-source-term">
+<h3>1.4. Set up source term<a class="headerlink" href="#set-up-source-term" title="Link to this heading">#</a></h3>
+<p>We set the source term <span class="math notranslate nohighlight">\(f(\xi)\)</span> to a constant value 1.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="set-up-pde-variational-form">
+<h3>1.5. Set up PDE variational form<a class="headerlink" href="#set-up-pde-variational-form" title="Link to this heading">#</a></h3>
+<p>After parametrizing conductivity using <span class="math notranslate nohighlight">\(\kappa(\xi) = e^{m(\xi)}\)</span>, the variational form of the Poisson PDE above is:</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align*}
+\int_{(0,1)\times(0,1)} \left( e^{m(\xi)} \nabla u(\xi) \cdot \nabla p(\xi)  - f(\xi)p(\xi) \right){d\xi}
+\end{align*}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(p(\xi)\)</span> is a test function. We create a function that takes the unknown parameters <code class="docutils literal notranslate"><span class="pre">m</span></code>, and a representation of the solution function <code class="docutils literal notranslate"><span class="pre">u</span></code> and a test function <code class="docutils literal notranslate"><span class="pre">p</span></code> and returns the weak form.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># FEniCS measure for integration</span>
+<span class="n">dksi</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Measure</span><span class="p">(</span><span class="s1">&#39;dx&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="c1"># The weak form of the PDE</span>
+<span class="k">def</span> <span class="nf">form</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ufl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="n">ufl</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">ufl</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">ufl</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">p</span><span class="p">))</span><span class="o">*</span><span class="n">dksi</span> <span class="o">-</span> <span class="n">f</span><span class="o">*</span><span class="n">p</span><span class="o">*</span><span class="n">dksi</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-cuqipy-pde-object">
+<h3>1.6 Create CUQIpy PDE object<a class="headerlink" href="#create-cuqipy-pde-object" title="Link to this heading">#</a></h3>
+<p>We bundle the FEniCS PDE model that we built in a <code class="docutils literal notranslate"><span class="pre">SteadyStateLinearFEniCSPDE</span></code> object:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PDE</span> <span class="o">=</span> <span class="n">SteadyStateLinearFEniCSPDE</span><span class="p">(</span> 
+        <span class="n">form</span><span class="p">,</span>
+        <span class="n">mesh</span><span class="p">,</span> 
+        <span class="n">parameter_function_space</span><span class="o">=</span><span class="n">parameter_function_space</span><span class="p">,</span>
+        <span class="n">solution_function_space</span><span class="o">=</span><span class="n">solution_function_space</span><span class="p">,</span>
+        <span class="n">dirichlet_bcs</span><span class="o">=</span><span class="n">dirichlet_bc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let us try solving this PDE for <span class="math notranslate nohighlight">\(m(\xi)=1\)</span>, first we create the parameter:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create homogeneous parameter m_1(ksi) = 1</span>
+
+<span class="c1"># Create a FEniCS function for the parameter</span>
+<span class="n">m_1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">parameter_function_space</span><span class="p">)</span>
+
+<span class="c1"># Assign the value 1 to the FEniCS function by interpolating a FEniCS Constant object.</span>
+<span class="n">m_1</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let us check <code class="docutils literal notranslate"><span class="pre">m_1</span></code> value at a given point (0.5, 0.8)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m_1</span><span class="p">(</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let us use the object we created <code class="docutils literal notranslate"><span class="pre">PDE</span></code> to assemble (build the discretized linear system) and solve the PDE</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assemble the PDE at m_1</span>
+<span class="n">PDE</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">m_1</span><span class="p">)</span>
+
+<span class="c1"># Solve the PDE at m_1</span>
+<span class="n">u</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">PDE</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plot the solution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">im</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x1955f2ad0&gt;
+</pre></div>
+</div>
+<img alt="../../../_images/c7466b08d59efbf036146129ca3398d07e59697741d19d41acff9f02984cbe69.png" src="../../../_images/c7466b08d59efbf036146129ca3398d07e59697741d19d41acff9f02984cbe69.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="building-and-solving-the-bayesian-inverse-problem-in-cuqipy">
+<h2>2. Building and solving the Bayesian inverse problem in CUQIpy <a class="anchor" id="Bayesian_problem"></a><a class="headerlink" href="#building-and-solving-the-bayesian-inverse-problem-in-cuqipy" title="Link to this heading">#</a></h2>
+<p>The goal is to infer the log conductivity profile <span class="math notranslate nohighlight">\(m(\xi)\)</span> given observed data <span class="math notranslate nohighlight">\(y^\mathrm{obs}\)</span>. These observation can be of the potential directly, i.e. <span class="math notranslate nohighlight">\(y^\mathrm{obs}=u(\xi)\)</span>, or a function of the potential.</p>
+<p>The data <span class="math notranslate nohighlight">\(y^\mathrm{obs}\)</span> is then given by:</p>
+<div class="math notranslate nohighlight">
+\[ y^\mathrm{obs} = \mathcal{G}(m) + \eta\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\eta\)</span> is the measurement noise</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathcal{G}\)</span> is the forward model operator which maps <span class="math notranslate nohighlight">\(m\)</span> to the observations.</p></li>
+</ul>
+<section id="create-domain-geometry">
+<h3>2.1. Create domain geometry<a class="headerlink" href="#create-domain-geometry" title="Link to this heading">#</a></h3>
+<p>We model <span class="math notranslate nohighlight">\(m\)</span> as a Matern-class random field which lead to the parametrization (Karhunen-Loève (KL) expansion):
+$<span class="math notranslate nohighlight">\(
+    m(\xi) = \sum_{i=0}^{\infty} \sqrt{\lambda_i}x_i e_i(\xi) \approx \sum_{i=0}^{n_\mathrm{KL}} \sqrt{\lambda_i}x_i e_i(\xi)
+\)</span>$</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\( \lambda_i \)</span> and <span class="math notranslate nohighlight">\( e_i \)</span> are the eigenvalues and eigenvectors of the Matern covariance  operator.</p></li>
+<li><p><span class="math notranslate nohighlight">\(n_\mathrm{KL}\)</span> is the number of KL terms used to approximate the random field <span class="math notranslate nohighlight">\(m(\xi)\)</span> (we choose <span class="math notranslate nohighlight">\(n_\mathrm{KL}=32\)</span> here).</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_i\sim \mathrm{Gaussain}(0,1)\)</span> are i.i.d. standard normal random variables.</p></li>
+<li><p>Now, <span class="math notranslate nohighlight">\(x_i\)</span> are the unknown parameters that parameterize the conductivity field <span class="math notranslate nohighlight">\(m(\xi)\)</span>.</p></li>
+</ul>
+<p>To define the Matern field (which represents the domain of our forward model), we use <code class="docutils literal notranslate"><span class="pre">MaternKLExpansion</span></code> and define the field as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define CUQI geometry on which m is defined</span>
+<span class="n">fenics_continuous_geo</span> <span class="o">=</span> <span class="n">FEniCSContinuous</span><span class="p">(</span><span class="n">parameter_function_space</span><span class="p">,</span>
+                                         <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">xi_1$&#39;</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">xi_2$&#39;</span><span class="p">])</span>
+
+<span class="c1"># Define the MaternExpansion geometry that maps the i.i.d random variables to</span>
+<span class="c1"># Matern field realizations</span>
+<span class="n">domain_geometry</span> <span class="o">=</span> <span class="n">MaternKLExpansion</span><span class="p">(</span><span class="n">fenics_continuous_geo</span><span class="p">,</span>
+                                    <span class="n">length_scale</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span>
+                                    <span class="n">num_terms</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-range-geometry">
+<h3>2.2. Create range geometry<a class="headerlink" href="#create-range-geometry" title="Link to this heading">#</a></h3>
+<p>We create the range geometry which represents the forward model output (the solution <span class="math notranslate nohighlight">\(u\)</span> in the entire domain in this case)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">range_geometry</span> <span class="o">=</span> <span class="n">FEniCSContinuous</span><span class="p">(</span><span class="n">solution_function_space</span><span class="p">,</span>
+                                  <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">xi_1$&#39;</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">xi_2$&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-cuqi-forward-model">
+<h3>2.3. Create cuqi forward model<a class="headerlink" href="#create-cuqi-forward-model" title="Link to this heading">#</a></h3>
+<p>Now we use <code class="docutils literal notranslate"><span class="pre">PDEModel</span></code> which is an object that belongs to the CUQIpy library and is agnostic to the FEniCS code (FEniCS code is abstracted away in the <code class="docutils literal notranslate"><span class="pre">PDE</span></code> object and the geometries).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cuqi_model</span> <span class="o">=</span> <span class="n">PDEModel</span><span class="p">(</span><span class="n">PDE</span><span class="p">,</span> <span class="n">domain_geometry</span><span class="o">=</span><span class="n">domain_geometry</span><span class="p">,</span> <span class="n">range_geometry</span><span class="o">=</span><span class="n">range_geometry</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-prior">
+<h3>2.4. Create prior<a class="headerlink" href="#create-prior" title="Link to this heading">#</a></h3>
+<p>We create the prior distribution, which is a distribution of the expansion coefficients <span class="math notranslate nohighlight">\(x_i\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">cuqi_model</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">domain_geometry</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can plot prior samples (realizations of Matern class Gaussian random field)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior_samples</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">prior_samples</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.tri.tricontour.TriContourSet at 0x19771c1f0&gt;,
+ &lt;matplotlib.tri.tricontour.TriContourSet at 0x1977c8250&gt;,
+ &lt;matplotlib.tri.tricontour.TriContourSet at 0x197878460&gt;,
+ &lt;matplotlib.tri.tricontour.TriContourSet at 0x197935360&gt;,
+ &lt;matplotlib.tri.tricontour.TriContourSet at 0x1979e0ac0&gt;]
+</pre></div>
+</div>
+<img alt="../../../_images/e361dc2ae59e0221785fdcbb2186fced10d61cc782eed30d147e4a88ad04ee67.png" src="../../../_images/e361dc2ae59e0221785fdcbb2186fced10d61cc782eed30d147e4a88ad04ee67.png" />
+</div>
+</div>
+</section>
+<section id="create-exact-solution-and-exact-data">
+<h3>2.5. Create exact solution and exact data<a class="headerlink" href="#create-exact-solution-and-exact-data" title="Link to this heading">#</a></h3>
+<p>We create an exact solution (for simplification in this notebook, the exact solution is created from a prior sample):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">exact_solution</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+
+<span class="c1"># plot exact solution</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">exact_solution</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x197bb6fb0&gt;
+</pre></div>
+</div>
+<img alt="../../../_images/3f6563da8015875367a5272370c07b3e5934829c999518bf5d48aab2363bb652.png" src="../../../_images/3f6563da8015875367a5272370c07b3e5934829c999518bf5d48aab2363bb652.png" />
+</div>
+</div>
+<p>Create synthesized data that corresponds to the exact_solution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">exact_data</span> <span class="o">=</span> <span class="n">cuqi_model</span><span class="p">(</span><span class="n">exact_solution</span><span class="p">)</span>
+
+<span class="c1"># plot exact data</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">range_geometry</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exact_data</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x197d48160&gt;
+</pre></div>
+</div>
+<img alt="../../../_images/8f5140320fbf1c0e850dbd5086e21ce353944a003ce9cb55bc3d63910cfb84c5.png" src="../../../_images/8f5140320fbf1c0e850dbd5086e21ce353944a003ce9cb55bc3d63910cfb84c5.png" />
+</div>
+</div>
+</section>
+<section id="create-likelihood-and-data">
+<h3>2.6. Create likelihood and data<a class="headerlink" href="#create-likelihood-and-data" title="Link to this heading">#</a></h3>
+<p>We create the data distribution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">cuqi_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="mf">.001</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">range_geometry</span><span class="p">)</span>
+<span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI Gaussian. Conditioning variables [&#39;x&#39;].
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we create the data</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_obs</span> <span class="o">=</span> <span class="n">y</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">exact_solution</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We plot the data</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot data</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">range_geometry</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_obs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x197e57790&gt;
+</pre></div>
+</div>
+<img alt="../../../_images/3391295c0acdc7b3d4775a75b938b6b4ee92fe0ecef4e985133456f4d9bcef6d.png" src="../../../_images/3391295c0acdc7b3d4775a75b938b6b4ee92fe0ecef4e985133456f4d9bcef6d.png" />
+</div>
+</div>
+<p>We create the likelihood function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">y</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_obs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-the-posterior">
+<h3>2.7. Create the posterior<a class="headerlink" href="#create-the-posterior" title="Link to this heading">#</a></h3>
+<p>We create the posterior distribution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cuqi_posterior</span> <span class="o">=</span> <span class="n">Posterior</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sample-the-posterior">
+<h3>2.8. Sample the posterior<a class="headerlink" href="#sample-the-posterior" title="Link to this heading">#</a></h3>
+<p>Create a <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.sampler/cuqi.sampler.pCN.html#cuqi.sampler.pCN">preconditioned Crank-Nicolson (pCN)</a> sampler</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ns</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">PCN</span><span class="p">(</span><span class="n">cuqi_posterior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Sample the posterior</p>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">warmup</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span>
+<span class="n">samples_pCN</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_samples</span><span class="p">()</span> <span class="c1"># ToDo: Allow burn-in removal in get_samples method</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:00&lt;00:00, 97.15it/s]
+100%|██████████| 100/100 [00:01&lt;00:00, 91.70it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We plot the samples mean (and the exact solution for reference)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot samples mean</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">samples_pCN</span><span class="o">.</span><span class="n">plot_mean</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># plot the exact solution</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">exact_solution</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Exact solution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Exact solution&#39;)
+</pre></div>
+</div>
+<img alt="../../../_images/3eaa158ea76c50372d1a5e1ffd20376121b93823c470f6ef990aa42c68d2b93c.png" src="../../../_images/3eaa158ea76c50372d1a5e1ffd20376121b93823c470f6ef990aa42c68d2b93c.png" />
+<img alt="../../../_images/dc2e2414231ed1784508f844911f057894e0fe045cf1648cd27e9b7d51b529be.png" src="../../../_images/dc2e2414231ed1784508f844911f057894e0fe045cf1648cd27e9b7d51b529be.png" />
+</div>
+</div>
+<p>We look at the trace plot</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_pCN</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Selecting 5 randomly chosen variables
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[&lt;AxesSubplot: title={&#39;center&#39;: &#39;v15&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v15&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v23&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v23&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v31&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v31&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v4&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v4&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v7&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v7&#39;}&gt;]], dtype=object)
+</pre></div>
+</div>
+<img alt="../../../_images/0e1826b63d0c8b7ef414372e692a8323f7b739b980a040ddc25540a2900091c7.png" src="../../../_images/0e1826b63d0c8b7ef414372e692a8323f7b739b980a040ddc25540a2900091c7.png" />
+</div>
+</div>
+<p>We plot the credibility interval</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_pCN</span><span class="o">.</span><span class="n">plot_ci</span><span class="p">(</span><span class="n">exact</span><span class="o">=</span><span class="n">exact_solution</span><span class="p">,</span> <span class="n">plot_par</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">)[::</span><span class="mi">5</span><span class="p">],[</span><span class="s1">&#39;v&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">)][::</span><span class="mi">5</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/5dc733eff68f2f52d6b410202f835789d7a5e23219084ce6fd44de2c25bff33a.png" src="../../../_images/5dc733eff68f2f52d6b410202f835789d7a5e23219084ce6fd44de2c25bff33a.png" />
+</div>
+</div>
+<p>The sampling did not go so well. We need to use a better sampling technique.</p>
+</section>
+</section>
+<section id="using-gradient-based-sampler">
+<h2>3. Using gradient-based sampler <a class="anchor" id="gradient_sampling"></a><a class="headerlink" href="#using-gradient-based-sampler" title="Link to this heading">#</a></h2>
+<section id="the-chain-rule">
+<h3>3.1. The chain rule<a class="headerlink" href="#the-chain-rule" title="Link to this heading">#</a></h3>
+<p>We compute the gradient of the log-posterior with respect to the unknown parameter <span class="math notranslate nohighlight">\(x\)</span> using the chain rule:</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_x \mathrm{log}p_\mathrm{post}(x) \propto \nabla_x \mathrm{log}p_\mathrm{likelihood}(\mathcal{G}(m(x))) + \nabla_x \mathrm{log}p_\mathrm{prior}(x), 
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(p_\mathrm{likelihood}\)</span> is the likelihood density function, <span class="math notranslate nohighlight">\(p_\mathrm{prior}\)</span> is the prior probability density function, <span class="math notranslate nohighlight">\(p_\mathrm{post}\)</span> is the posterior probability density function and <span class="math notranslate nohighlight">\(m\)</span> is the Matern field.</p>
+<p>We have the maps:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(z := m(x)\)</span>, implemented by the domain geometry <code class="docutils literal notranslate"><span class="pre">MaternKLExpansion</span></code>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(y := \mathcal{G}(z) \)</span>, implemented by the forward model <code class="docutils literal notranslate"><span class="pre">PDEModel</span></code>.</p></li>
+</ul>
+<p>By the chain rule we have (for the likelihood part):</p>
+<div class="math notranslate nohighlight">
+\[ \nabla_x \mathrm{log}p_\mathrm{likelihood}(y) = J_{z,x}^T(x) J_{y, z}^T(z) \nabla_y  \mathrm{log}p_\mathrm{likelihood}(y), \]</div>
+<p>where <span class="math notranslate nohighlight">\(J_{z,x}\)</span> is the Jacobian of the map <span class="math notranslate nohighlight">\(z=m(x)\)</span> with respect to <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(J_{y, z}\)</span> is the Jacobian of the map <span class="math notranslate nohighlight">\(y=\mathcal{G}(z)\)</span> with respect to <span class="math notranslate nohighlight">\(z\)</span> and <span class="math notranslate nohighlight">\(\nabla_y  \mathrm{log}p_\mathrm{likelihood}(y)\)</span> is the gradient of the log-likelihood with respect to <span class="math notranslate nohighlight">\(y\)</span>.</p>
+<ul class="simple">
+<li><p>We use adjoint-based method to compute the matrix vector product <span class="math notranslate nohighlight">\(J_{y, z}^T(z)v\)</span> for some given vector <span class="math notranslate nohighlight">\(v\)</span>.</p>
+<ul>
+<li><p>Costs one forward solve and one adjoint solve (cheaper than finite difference approximation)</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>This is done automatically by CUQIpy-FEniCS</strong></p>
+</section>
+<section id="set-the-adjoint-problem-boundary-conditions">
+<h3>3.1 Set the adjoint problem boundary conditions<a class="headerlink" href="#set-the-adjoint-problem-boundary-conditions" title="Link to this heading">#</a></h3>
+<p>To compute the gradient using adjoint based method, we need to define the adjoint problem (which the <code class="docutils literal notranslate"><span class="pre">PDE</span></code> object infers) and derive the adjoint problem boundary conditions.</p>
+<p>See: Gunzburger, M. D. (2002). Perspectives in flow control and optimization. Society for Industrial and Applied Mathematics, for adjoint based derivative derivation.</p>
+<p>We create the adjoint problem boundary conditions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adjoint_dirichlet_bc_expr</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">adjoint_dirichlet_bc</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span><span class="n">solution_function_space</span><span class="p">,</span>
+                                      <span class="n">adjoint_dirichlet_bc_expr</span><span class="p">,</span>
+                                      <span class="n">u_boundary</span><span class="p">)</span> <span class="c1">#adjoint problem bcs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We recreate the <code class="docutils literal notranslate"><span class="pre">PDE</span></code> object to use the adjoint boundary conditions. We then again create the <code class="docutils literal notranslate"><span class="pre">PDEModel</span></code>, the data distribution, and the posterior distribution to use the new <code class="docutils literal notranslate"><span class="pre">PDE</span></code> object.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PDE</span> <span class="o">=</span> <span class="n">SteadyStateLinearFEniCSPDE</span><span class="p">(</span> 
+        <span class="n">form</span><span class="p">,</span>
+        <span class="n">mesh</span><span class="p">,</span> 
+        <span class="n">parameter_function_space</span><span class="o">=</span><span class="n">parameter_function_space</span><span class="p">,</span>
+        <span class="n">solution_function_space</span><span class="o">=</span><span class="n">solution_function_space</span><span class="p">,</span>
+        <span class="n">dirichlet_bcs</span><span class="o">=</span><span class="n">dirichlet_bc</span><span class="p">,</span>
+        <span class="n">adjoint_dirichlet_bcs</span><span class="o">=</span><span class="n">adjoint_dirichlet_bc</span><span class="p">)</span>
+
+<span class="n">cuqi_model</span> <span class="o">=</span> <span class="n">PDEModel</span><span class="p">(</span><span class="n">PDE</span><span class="p">,</span>
+                      <span class="n">domain_geometry</span><span class="o">=</span><span class="n">domain_geometry</span><span class="p">,</span>
+                      <span class="n">range_geometry</span><span class="o">=</span><span class="n">range_geometry</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">cuqi_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">cov</span><span class="o">=</span><span class="mf">.001</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">range_geometry</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">y</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_obs</span><span class="p">)</span>
+<span class="n">cuqi_posterior</span> <span class="o">=</span> <span class="n">Posterior</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="check-the-gradient-correctness-at-an-input-x-mathrm-test">
+<h3>3.2 Check the gradient correctness at an input <span class="math notranslate nohighlight">\(x_\mathrm{test}\)</span><a class="headerlink" href="#check-the-gradient-correctness-at-an-input-x-mathrm-test" title="Link to this heading">#</a></h3>
+<p>We check the log posterior gradient correctness at an input <span class="math notranslate nohighlight">\(x_\mathrm{test}\)</span> by comparing the gradient computed by CUQIpy-FEniCS using adjoint based method and the gradient computed using <code class="docutils literal notranslate"><span class="pre">scipy</span></code> <code class="docutils literal notranslate"><span class="pre">optimize.approx_fprime</span></code> method.</p>
+<p>We first create the input vector <span class="math notranslate nohighlight">\(x_\mathrm{test}\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create x_i</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">CUQIarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">domain_geometry</span><span class="o">.</span><span class="n">par_dim</span><span class="p">),</span> <span class="n">is_par</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">domain_geometry</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Compute the posterior gradient using CUQIpy-FEniCS</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Posterior gradient (cuqi.model)&quot;</span><span class="p">)</span>
+<span class="n">cuqi_grad</span> <span class="o">=</span> <span class="n">cuqi_posterior</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Posterior gradient (cuqi.model)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Compute the approximate gradient using <code class="docutils literal notranslate"><span class="pre">optimize.approx_fprime</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scipy approx&quot;</span><span class="p">)</span>
+<span class="n">step</span> <span class="o">=</span> <span class="mf">1e-11</span>   <span class="c1"># finite diff step</span>
+<span class="n">scipy_grad</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">approx_fprime</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">cuqi_posterior</span><span class="o">.</span><span class="n">logpdf</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Scipy approx
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plot both gradients</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cuqi_grad</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;CUQI&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">scipy_grad</span> <span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Approximate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Comparing gradient with numerical approximation&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/12665f09dffb1c6bdd6668d89cdcc268295b1d00c744387903ab77578b0a9fd6.png" src="../../../_images/12665f09dffb1c6bdd6668d89cdcc268295b1d00c744387903ab77578b0a9fd6.png" />
+</div>
+</div>
+</section>
+<section id="use-gradient-based-sampler-nuts">
+<h3>3.3. Use gradient based sampler (NUTS)<a class="headerlink" href="#use-gradient-based-sampler-nuts" title="Link to this heading">#</a></h3>
+<p>Specify a gradient-based sampler (we use NUTS here)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ns</span> <span class="o">=</span> <span class="mi">200</span> <span class="c1"># number of samples</span>
+<span class="n">Nb</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># burn-in</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">NUTS</span><span class="p">(</span><span class="n">cuqi_posterior</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Sample using NUTS (this may take a little while)</p>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">warmup</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span>
+<span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span>
+<span class="n">samples_NUTS</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_samples</span><span class="p">()</span><span class="o">.</span><span class="n">burnthin</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:05&lt;00:00,  1.99it/s]
+/Users/amal/Documents/research_code/CUQI-DTU/CUQIpy/cuqi/experimental/mcmc/_hmc.py:315: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  if self._epsilon_bar == &quot;unset&quot;: # Initial value of epsilon_bar for sampling
+100%|██████████| 200/200 [10:54&lt;00:00,  3.27s/it]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plot the mean and the exact solution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot samples mean</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">samples_NUTS</span><span class="o">.</span><span class="n">plot_mean</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># plot the exact solution</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">exact_solution</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Exact solution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Exact solution&#39;)
+</pre></div>
+</div>
+<img alt="../../../_images/1656179ef2555b7a3808be024a15e1e92bf35810f14674d5e0e1a346d2146ca1.png" src="../../../_images/1656179ef2555b7a3808be024a15e1e92bf35810f14674d5e0e1a346d2146ca1.png" />
+<img alt="../../../_images/dc2e2414231ed1784508f844911f057894e0fe045cf1648cd27e9b7d51b529be.png" src="../../../_images/dc2e2414231ed1784508f844911f057894e0fe045cf1648cd27e9b7d51b529be.png" />
+</div>
+</div>
+<p>Plot trace</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_NUTS</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Selecting 5 randomly chosen variables
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[&lt;AxesSubplot: title={&#39;center&#39;: &#39;v1&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v1&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v14&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v14&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v31&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v31&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v6&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v6&#39;}&gt;],
+       [&lt;AxesSubplot: title={&#39;center&#39;: &#39;v7&#39;}&gt;,
+        &lt;AxesSubplot: title={&#39;center&#39;: &#39;v7&#39;}&gt;]], dtype=object)
+</pre></div>
+</div>
+<img alt="../../../_images/130738918a22814e8829ba691fab82b1335cb67fb371cb4abab5d001b2329379.png" src="../../../_images/130738918a22814e8829ba691fab82b1335cb67fb371cb4abab5d001b2329379.png" />
+</div>
+</div>
+<p>We also plot the credibility interval</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_NUTS</span><span class="o">.</span><span class="n">plot_ci</span><span class="p">(</span><span class="n">exact</span><span class="o">=</span><span class="n">exact_solution</span><span class="p">,</span> <span class="n">plot_par</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">)[::</span><span class="mi">5</span><span class="p">],[</span><span class="s1">&#39;v&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">)][::</span><span class="mi">5</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../_images/63568057bd4f755fc59bdfd894b8c035056ef604fdc00f5d180c927f5fbff347.png" src="../../../_images/63568057bd4f755fc59bdfd894b8c035056ef604fdc00f5d180c927f5fbff347.png" />
+</div>
+</div>
+<p>Now the sampling has gone better. This is because we utilized gradient information of the problem.</p>
+<section id="try-yourself-optional">
+<h4>★ Try yourself (optional):<a class="headerlink" href="#try-yourself-optional" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>What do you notice by comparing the trace plots of the pCN samples and the NUTS samples, and comparing the samples mean and the exact solution in both cases.</p></li>
+<li><p>Compute the effective samples size (ESS) for each case.</p></li>
+<li><p>In this example, we build FEniCS code PDE ourselves. CUQIpy-FEniCS also provides test problems. Copy-paste the code script you find on <a class="reference external" href="https://github.com/CUQI-DTU/CUQIpy-FEniCS">CUQIpy-FEniCS main page</a> and run the code here.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Your code here</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "CUQI-DTU/CUQI-Book",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./chapter04/Plugins/CUQIpy-FEniCS"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../../PDE/core_pde.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Solving PDE-based BIP using core CUQIpy</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../CUQIpy-PyTorch/hmc.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Hamiltonian Monte Carlo with CUQIpy-PyTorch</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives-of-this-notebook">Learning objectives of this notebook:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-required-libraries-and-classes">Import required libraries and classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-a-fenics-based-poisson-problem">1. Building a FEniCS based Poisson problem <a class="anchor" id="PDEproblem"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-discretization">The discretization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-mesh">1.1. Set up mesh</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-function-spaces">1.2. Set up function spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-dirichlet-boundary-conditions">1.3. Set up Dirichlet boundary conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-source-term">1.4. Set up source term</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-pde-variational-form">1.5. Set up PDE variational form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-cuqipy-pde-object">1.6 Create CUQIpy PDE object</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-and-solving-the-bayesian-inverse-problem-in-cuqipy">2. Building and solving the Bayesian inverse problem in CUQIpy <a class="anchor" id="Bayesian_problem"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-domain-geometry">2.1. Create domain geometry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-range-geometry">2.2. Create range geometry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-cuqi-forward-model">2.3. Create cuqi forward model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-prior">2.4. Create prior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-exact-solution-and-exact-data">2.5. Create exact solution and exact data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-likelihood-and-data">2.6. Create likelihood and data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-posterior">2.7. Create the posterior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-the-posterior">2.8. Sample the posterior</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-gradient-based-sampler">3. Using gradient-based sampler <a class="anchor" id="gradient_sampling"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-chain-rule">3.1. The chain rule</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-the-adjoint-problem-boundary-conditions">3.1 Set the adjoint problem boundary conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#check-the-gradient-correctness-at-an-input-x-mathrm-test">3.2 Check the gradient correctness at an input <span class="math notranslate nohighlight">\(x_\mathrm{test}\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-gradient-based-sampler-nuts">3.3. Use gradient based sampler (NUTS)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#try-yourself-optional">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CUQIpy developer team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+<a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a>
+</p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

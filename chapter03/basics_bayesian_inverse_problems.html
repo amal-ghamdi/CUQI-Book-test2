@@ -1,0 +1,1461 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Bayesian Inverse Problems &#8212; Uncertainty Quantification in Inverse Problems with CUQIpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"dd": "\\mathrm{d}", "abs": ["\\left\\vert#1\\right\\vert", 1], "ve": ["\\bm{#1}", 1], "mat": ["\\mathbf{#1}", 1], "N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"], "bm": ["{\\boldsymbol #1}", 1]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter03/basics_bayesian_inverse_problems';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Chapter 4: Advanced use cases of CUQIpy" href="../chapter04/chapter04.html" />
+    <link rel="prev" title="Forward models, data generation and forward UQ" href="basics_forward_models.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Uncertainty Quantification in Inverse Problems with CUQIpy
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter01/chapter01.html">Chapter 1: Introduction to CUQIpy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter01/overview_of_cuqipy.html">Overview of CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter01/run_mini_book.html">Running the mini-book code examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter01/intro_example_short.html">Probably the simplest BIP in the world (the short story)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter01/intro_example_long.html">Probably the simplest BIP in the world (the long story)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter02/chapter02.html">Chapter 2: Problem examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter02/two_forward_problems.html">Two forward models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter02/two_target_distributions.html">Two target distributions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="chapter03.html">Chapter 3: Basics of CUQIpy for solving BIPs</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basics_distributions.html">Introduction to distributions and basic sampling in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basics_forward_models.html">Forward models, data generation and forward UQ</a></li>
+
+
+
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Bayesian Inverse Problems</a></li>
+
+
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter04/chapter04.html">Chapter 4: Advanced use cases of CUQIpy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/gibbs.html">Gibbs sampling</a></li>
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/Plugins/CUQIpy-CIL/demo_ct.html">X-ray CT using CUQIpy and CUQIpy-CIL plugin</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/PDE/core_pde.html">Solving PDE-based BIP using core CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/Plugins/CUQIpy-FEniCS/poisson_2D_fenics.html">PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/Plugins/CUQIpy-PyTorch/hmc.html">Hamiltonian Monte Carlo with CUQIpy-PyTorch</a></li>
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter05/chapter05.html">Chapter 5: More on CUQIpy technical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter05/geometries_in_cuqipy.html">Geometry Objects: Representation, Parametrization, and Mapping</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter06/chapter06.html">Chapter 6: More theory on priors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter06/markov_random_fields.html">Markov random fields in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter06/entropy.html">Computing the entropy of a distribution, numerically</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter07/chapter07.html">Chapter 7: More theory on sampling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter07/more_theory_on_sampling_with_cuqipy.html">Sampling with CUQIpy: five little stories</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter08/chapter08.html">Chapter 8: More resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/CUQI-DTU/CUQI-Book/blob/master/chapter03/basics_bayesian_inverse_problems.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/chapter03/basics_bayesian_inverse_problems.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Bayesian Inverse Problems</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Bayesian Inverse Problems</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-modules">Load modules</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-and-sampling-a-bayesian-inverse-problem-high-level">1. Defining and sampling a Bayesian Inverse Problem (high-level)<a class="anchor" id="BIP"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-on-bayesian-inverse-problems-with-cuqipy">Note on Bayesian inverse problems with CUQIpy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deterministic-forward-model-and-observed-data">1.1 Deterministic forward model and observed data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distributions-for-parameters-and-data">1.2 Distributions for parameters and data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#try-yourself-optional">★ Try yourself (optional):</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#note-on-notation">Note on notation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inverse-problem">1.3 Bayesian inverse problem</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-and-sampling-a-bayesian-inverse-problem-low-level">2 Defining and sampling a Bayesian Inverse Problem (low-level)<a class="anchor" id="Joint"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-joint-distribution">2.1 Defining the joint distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-posterior-distribution">2.2 Defining the posterior distribution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-the-posterior">2.3 Sampling the posterior</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trying-out-other-samples">Trying out other samples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-different-prior-choices">3. Exploring different prior choices<a class="anchor" id="ModifyPriors"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Try yourself (optional):</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-point-estimates-of-the-posterior">4. Computing point estimates of the posterior ★ <a class="anchor" id="pointestimates"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="bayesian-inverse-problems">
+<h1>Bayesian Inverse Problems<a class="headerlink" href="#bayesian-inverse-problems" title="Link to this heading">#</a></h1>
+<p>In this notebook, we explore uncertainty quantification for inverse problems through Bayesian inference using CUQIpy.</p>
+<p>Essentially, inverse problems aim to infer a set of unknown parameters of interest given a forward model and observed data. Within the realm of uncertainty quantification, the focus is on the uncertainty associated with these inferred parameters.</p>
+<p>In the Bayesian framework, uncertainty is quantified by a probability distribution over the parameter space. To estimate this uncertainty, Bayesian inference utilizes Bayes’ theorem to define the <em>posterior distribution</em> of the parameters by combining prior knowledge and observed data.</p>
+<p>This notebook aims to demonstrate the use of CUQIpy to combine the all the components required for Bayesian inference in a way that closely matches the mathematical formalism.</p>
+<p>The online documentation for CUQIpy can be found at <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/">https://cuqi-dtu.github.io/CUQIpy/</a>. Throughout the notebook, we will link to the relevant sections of the documentation for further details.</p>
+<section id="learning-objectives">
+<h2>Learning objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>Going through the notebook, you will see how to quantify the uncertainty for an example inverse problem using the CUQIpy library by learning how to:</p>
+<ul class="simple">
+<li><p>Define distributions for each of the relevant parameters in an inverse problem.</p></li>
+<li><p>Define and sample a Bayesian inverse problem.</p></li>
+<li><p>Construct explicitly a posterior distribution by conditioning the joint distribution on observed data.</p></li>
+<li><p>Sample a posterior distribution with specific choice of sampler.</p></li>
+<li><p>Analyze the samples from the posterior distribution.</p></li>
+<li><p>Compute point estimates of posterior, e.g., MAP or ML.</p></li>
+<li><p>Describe how the high-level “BayesianProblem” combines the above steps into a convenient non-expert interface.</p></li>
+</ul>
+</section>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#BIP"><span class="xref myst">Defining and sampling a Bayesian Inverse Problem (high-level)</span></a></p></li>
+<li><p><a class="reference internal" href="#Joint"><span class="xref myst">Defining and sampling a Bayesian Inverse Problem (low-level)</span></a></p></li>
+<li><p><a class="reference internal" href="#ModifyPriors"><span class="xref myst">Exploring different prior choices</span></a></p></li>
+<li><p><a class="reference internal" href="#pointestimates"><span class="xref myst">Computing point estimates of the posterior</span></a> ★</p></li>
+</ol>
+<p>The section marked with ★ is optional and can be skipped if you are short on time.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<p>[1] Gelman, Andrew, et al. “Bayesian workflow.” arXiv preprint arXiv:2011.01808 (2020) <a class="reference external" href="https://arxiv.org/abs/2011.01808">https://arxiv.org/abs/2011.01808</a>.</p>
+<p>[2] Riis, Nicolai AB, et al. “CUQIpy–Part I: computational uncertainty quantification for inverse problems in Python.” arXiv preprint arXiv:2305.16949 (2023) <a class="reference external" href="https://arxiv.org/abs/2305.16949">https://arxiv.org/abs/2305.16949</a>.</p>
+<div style="border: 2px solid #FFB74D; background-color: #FFF3E0; border-radius: 8px; padding: 10px; font-family: Arial, sans-serif; color: #333; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); max-width: 750px; margin: 0 auto;">
+  <strong style="color: #E65100;">⚠️ Note:</strong> This notebook uses MCMC samplers from the new <code>cuqi.experimental.mcmc</code> module, which are expected to become the default soon. Check out the <a href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc.html#module-cuqi.experimental.mcmc">documentation</a> for more details.
+</div></section>
+<section id="load-modules">
+<h2>Load modules<a class="headerlink" href="#load-modules" title="Link to this heading">#</a></h2>
+<p>We start of by importing the Python packages we need (including CUQIpy).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">cuqi</span>
+<span class="kn">from</span> <span class="nn">cuqi.testproblem</span> <span class="kn">import</span> <span class="n">Deconvolution1D</span><span class="p">,</span> <span class="n">Deconvolution2D</span>
+<span class="kn">from</span> <span class="nn">cuqi.distribution</span> <span class="kn">import</span> <span class="n">JointDistribution</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">CMRF</span><span class="p">,</span> <span class="n">LMRF</span><span class="p">,</span> <span class="n">GMRF</span>
+<span class="kn">from</span> <span class="nn">cuqi.experimental.mcmc</span> <span class="kn">import</span> <span class="n">LinearRTO</span><span class="p">,</span> <span class="n">PCN</span><span class="p">,</span> <span class="n">CWMH</span><span class="p">,</span> <span class="n">ULA</span><span class="p">,</span> <span class="n">MALA</span><span class="p">,</span> <span class="n">NUTS</span>
+<span class="kn">from</span> <span class="nn">cuqi.problem</span> <span class="kn">import</span> <span class="n">BayesianProblem</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="defining-and-sampling-a-bayesian-inverse-problem-high-level">
+<h1>1. Defining and sampling a Bayesian Inverse Problem (high-level)<a class="anchor" id="BIP"></a><a class="headerlink" href="#defining-and-sampling-a-bayesian-inverse-problem-high-level" title="Link to this heading">#</a></h1>
+<p>Solving a Bayesian inverse problem amounts to characterizing the posterior distribution.</p>
+<p>The posterior describes the probability distribution of the parameters we are interested in. This is achieved by combining prior knowledge of the parameters and observed data. In its most general form, the posterior is given by Bayes’ theorem:</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align*}
+p(\boldsymbol{\theta} \mid \mathbf{y}) = \frac{p(\mathbf{y} \mid \boldsymbol{\theta})p(\boldsymbol{\theta})}{p(\mathbf{y})} \propto p(\mathbf{y} \mid \boldsymbol{\theta})p(\boldsymbol{\theta}),
+\end{align*}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> is the parameter vector of <em>all</em> the parameters we are interested in inferring and <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> is the observable data. In the simplest case one could have a single parameter vector of interest, say <span class="math notranslate nohighlight">\(\boldsymbol{\theta}=[\mathbf{x}]\)</span>.</p>
+<p>The probability density function <span class="math notranslate nohighlight">\(p(\boldsymbol{\theta})\)</span> is the prior distribution of the parameters.</p>
+<p>Given fixed observed data <span class="math notranslate nohighlight">\(\mathbf{y}_\mathrm{data}\)</span>, the term <span class="math notranslate nohighlight">\(p(\mathbf{y} \mid \boldsymbol{\theta})\)</span> considered as a function of <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> is known as the
+likelihood function or just <em>likelihood</em>, also denoted <span class="math notranslate nohighlight">\(L(\boldsymbol{\theta} \mid \mathbf{y} = \mathbf{y}_\mathrm{data})\)</span>, which we note is not a probability density but a density function.</p>
+<p>When <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> is not fixed, <span class="math notranslate nohighlight">\(p(\mathbf{y} \mid \boldsymbol{\theta})\)</span> is a probability density function of the data <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> given the value of the parameters <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>. In CUQIpy we refer to this distribution as the <em>data distribution</em>.</p>
+<p>The denominator <span class="math notranslate nohighlight">\(p(\mathbf{y})\)</span> is the <em>evidence</em> and is a normalization constant (that we typically ignore because it does not affect the MCMC sampling) that ensures that the posterior integrates to 1.</p>
+<section id="note-on-bayesian-inverse-problems-with-cuqipy">
+<h2>Note on Bayesian inverse problems with CUQIpy<a class="headerlink" href="#note-on-bayesian-inverse-problems-with-cuqipy" title="Link to this heading">#</a></h2>
+<p>CUQIpy uses a general approach to Bayesian modeling that not only aims to define the posterior distribution, but instead to define the joint distribution of all the parameters. This more general approach is useful because it allows one to carry out more tasks related to uncertainty quantification of inverse problems such as prior-predictive checks, model checking, posterior-predictive checks and more. For more details on some of these topics see the overview in [1].</p>
+<p>In this notebook, we initially focus on how to define and sample a Bayesian inverse problem using the high-level interface in CUQIpy. We then later show a more low-level approach to defining the posterior distribution, which is useful for users who want to have more control the type of sampler used for sampling the posterior distribution.</p>
+</section>
+<section id="deterministic-forward-model-and-observed-data">
+<h2>1.1 Deterministic forward model and observed data<a class="headerlink" href="#deterministic-forward-model-and-observed-data" title="Link to this heading">#</a></h2>
+<p>Consider a Bayesian inverse problem</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{y}=\mathbf{A}\mathbf{x} + \mathbf{e},
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{A}: \mathbb{R}^n \to \mathbb{R}^m\)</span> is the (deterministic) forward model of the inverse problem and <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> are random variables representing the observed data and parameter of interest respectively. Here <span class="math notranslate nohighlight">\(\mathbf{e}\)</span> is a random variable representing additive noise in the data.</p>
+<p>For this example let us consider the <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.testproblem/cuqi.testproblem.Deconvolution1D.html#cuqi.testproblem.Deconvolution1D">Deconvolution1D</a> testproblem and extract a CUQIpy forward model and some synthetic data denoted <span class="math notranslate nohighlight">\(\mathbf{y}_\mathrm{data}\)</span> (a realization of <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>).</p>
+<p>Note that this is a linear inverse problem, but the same approach can be used for nonlinear inverse problems.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load forward model, data and problem information</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">probInfo</span> <span class="o">=</span> <span class="n">Deconvolution1D</span><span class="p">(</span><span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;sinc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+
+<span class="c1"># For convenience, we define the dimension of the domain of A</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span>
+
+<span class="c1"># For convenience, we extract the exact solution as x_exact</span>
+<span class="n">x_exact</span> <span class="o">=</span> <span class="n">probInfo</span><span class="o">.</span><span class="n">exactSolution</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Before going further let us briefly visualize the data and compare with the exact solution to the problem.</p>
+<p>Here we should expect to see that the data is a convolved version of the exact solution with some added noise. We can also inspect the <code class="docutils literal notranslate"><span class="pre">probInfo</span></code> variable to get further information about the problem.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">);</span> <span class="n">x_exact</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Exact Solution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">);</span> <span class="n">y_data</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+
+<span class="c1"># Print information about the problem</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">probInfo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ProblemInfo with the following set attributes:
+[&#39;exactSolution&#39;, &#39;exactData&#39;, &#39;infoString&#39;]
+ infoString: Noise type: Additive Gaussian with std: 0.01
+</pre></div>
+</div>
+<img alt="../_images/5afc0a84aad1e87792e685bccdad0e4b5f2f9bf3a0f97df65e0d45bda030b58c.png" src="../_images/5afc0a84aad1e87792e685bccdad0e4b5f2f9bf3a0f97df65e0d45bda030b58c.png" />
+</div>
+</div>
+</section>
+<section id="distributions-for-parameters-and-data">
+<h2>1.2 Distributions for parameters and data<a class="headerlink" href="#distributions-for-parameters-and-data" title="Link to this heading">#</a></h2>
+<p>The goal now is to define distributions for each the random variables that represent the parameters and data in the above-mentioned Bayesian inverse problem. One way to think about this, is that we are trying to define a statistical model for the data generating process (see reference [1]), which we call a <em>Bayesian Problem</em> in CUQIpy.</p>
+<p>For the unknown <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>, we use a-priori knowledge to define its distribution. In this case, the sinc phantom in the Deconvolution test problem can be represented fairly well by a distribution that generates smooth, but spatially correlated realizations. Thus we choose a <a class="reference internal" href="../chapter06/markov_random_fields.html"><span class="std std-doc">Gaussian Markov Random Field (GMRF)</span></a> for <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>. We denote by <em>GMRF</em> the corresponding distribution</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align*}
+\mathbf{x} &amp;\sim \mathrm{GMRF}(\mathbf{0}, d),
+\end{align*}
+\]</div>
+<p>with some choice of the precision say <span class="math notranslate nohighlight">\(d=50\)</span>. We define it in CUQIpy as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define prior precision</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="c1"># Define GMRF prior (zero boundary conditions are the default)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">GMRF</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>From the problem info string earlier, we saw that the noise is Gaussian with standard deviation <span class="math notranslate nohighlight">\(s_\mathbf{e}=0.01\)</span>, i.e.,</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align*}
+\mathbf{e} &amp;\sim \mathrm{Gaussian}(\mathbf{0}, s_\mathbf{e}^2 \mathbf{I}).
+\end{align*}
+\]</div>
+<p>Instead of working directly with the noise variable <span class="math notranslate nohighlight">\(\mathbf{e}\)</span>, we can include the stochastic element of the noise in the random variable <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> representing the data.</p>
+<p>Because the data depend on <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> we are really interested in defining the <em>data distribution</em> for <span class="math notranslate nohighlight">\(\mathbf{y} \mid \mathbf{x}\)</span> and since the noise is the only stochastic element of <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> when <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> is fixed we have</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align*}
+\mathbf{y} \mid \mathbf{x} &amp;\sim \mathrm{Gaussian}(\mathbf{A}\mathbf{x}, s_\mathbf{y}^2 \mathbf{I}),
+\end{align*}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_\mathbf{e}=s_\mathbf{y} = 0.01\)</span>.</p>
+<p>Notice that this definition depends both on the forward model <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> and the random variable <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p>
+<p>In CUQIpy, we can define the distribution for <span class="math notranslate nohighlight">\(\mathbf{y} \mid \mathbf{x}\)</span> matching the mathematical expression using our previously defined variables <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code> as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define noise standard deviation</span>
+<span class="n">s_y</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+<span class="c1"># Define data distribution</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="n">s_y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="try-yourself-optional">
+<h3>★ Try yourself (optional):<a class="headerlink" href="#try-yourself-optional" title="Link to this heading">#</a></h3>
+<p>Have a look at the distributions for <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> by calling <code class="docutils literal notranslate"><span class="pre">print</span></code> on them in the code-cell below.</p>
+<ul class="simple">
+<li><p>How are the distributions different?</p></li>
+<li><p>Is it clear that the distribution for <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> is a conditional distribution?</p></li>
+<li><p>Can you generate and plot a realization (sample) of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>? Does the realization show spatial correlation?</p></li>
+<li><p>How about generating a sample from <span class="math notranslate nohighlight">\(\mathbf{y}\mid\mathbf{x}\)</span> given some fixed value of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>? What does a sample represent in this case?</p></li>
+</ul>
+<p><strong>Hint:</strong> to condition <code class="docutils literal notranslate"><span class="pre">y</span></code> on a value e.g. <code class="docutils literal notranslate"><span class="pre">x_exact</span></code> the syntax is <code class="docutils literal notranslate"><span class="pre">y(x=x_exact)</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Your code here</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="note-on-notation">
+<h3>Note on notation<a class="headerlink" href="#note-on-notation" title="Link to this heading">#</a></h3>
+<p>It is common (for convenience in terms of notation) not to explicitly write the dependance of each random variable when specifying a complete Bayesian problem. For example, for the case above one would often write</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\mathbf{x} &amp;\sim \mathrm{GMRF}(\mathbf{0}, d)\\
+\mathbf{y} &amp;\sim \mathrm{Gaussian}(\mathbf{A}\mathbf{x}, s_\mathbf{y}^2 I),
+\end{align*}
+\end{split}\]</div>
+<p>where the dependance of <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> on <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> is implicit.</p>
+<p>This compact notation completely specifies the Bayesian problem for the so-called <em>data generating process</em>, making clear all the assumptions about the data and parameters.</p>
+<p>In CUQIpy - when all deterministic parameters and forward models are defined - the Bayesian problem is written in code using almost exactly the same syntax as the mathematical notation above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bayesian problem (repeated in case previous cells were modified)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">GMRF</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="n">s_y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="bayesian-inverse-problem">
+<h1>1.3 Bayesian inverse problem<a class="headerlink" href="#bayesian-inverse-problem" title="Link to this heading">#</a></h1>
+<p>The simplest way to sample a Bayesian inverse problem in CUQIpy is to use the <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.problem/cuqi.problem.BayesianProblem.html#cuqi.problem.BayesianProblem">BayesianProblem class</a>.</p>
+<p>Using the BayesianProblem class, one can easily define and sample from the posterior distribution of a Bayesian inverse problem by providing the distributions for the parameters and data and subsequently setting the observed data.</p>
+<p>Calling the <code class="docutils literal notranslate"><span class="pre">UQ</span></code> method on the BayesianProblem object will automatically sample the posterior distribution using a suitable choice of sampling algorithm and plot the results.</p>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The simplest way to do uncertainty quantification in CUQIpy:</span>
+
+<span class="n">BP</span> <span class="o">=</span> <span class="n">BayesianProblem</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>                         <span class="c1"># Create Bayesian problem</span>
+<span class="n">BP</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>                              <span class="c1"># Provide observed data</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">UQ</span><span class="p">(</span><span class="n">exact</span><span class="o">=</span><span class="n">x_exact</span><span class="p">,</span> <span class="n">experimental</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Run UQ analysis (comparing with exact solution)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Computing 1000 samples
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic sampler selection is a work-in-progress. !!!
+!!!       Always validate the computed results.        !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!  Using samplers from cuqi.experimental.mcmc  !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Using cuqi.experimental.mcmc LinearRTO sampler.
+burn-in: 20%
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:   0%|          | 0/200 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:  19%|█▉        | 38/200 [00:00&lt;00:00, 371.00it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:  38%|███▊      | 76/200 [00:00&lt;00:00, 372.71it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:  57%|█████▋    | 114/200 [00:00&lt;00:00, 375.94it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:  76%|███████▋  | 153/200 [00:00&lt;00:00, 377.95it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:  96%|█████████▌| 192/200 [00:00&lt;00:00, 380.17it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup: 100%|██████████| 200/200 [00:00&lt;00:00, 377.18it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:   0%|          | 0/1000 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:   4%|▍         | 39/1000 [00:00&lt;00:02, 384.58it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:   8%|▊         | 78/1000 [00:00&lt;00:02, 380.65it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  12%|█▏        | 117/1000 [00:00&lt;00:02, 381.80it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  16%|█▌        | 156/1000 [00:00&lt;00:02, 382.84it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  20%|█▉        | 195/1000 [00:00&lt;00:02, 383.35it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  23%|██▎       | 234/1000 [00:00&lt;00:02, 382.91it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  27%|██▋       | 273/1000 [00:00&lt;00:01, 381.31it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  31%|███       | 312/1000 [00:00&lt;00:01, 380.64it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  35%|███▌      | 351/1000 [00:00&lt;00:01, 381.17it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  39%|███▉      | 390/1000 [00:01&lt;00:01, 379.29it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  43%|████▎     | 428/1000 [00:01&lt;00:01, 375.74it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  47%|████▋     | 466/1000 [00:01&lt;00:01, 376.58it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  50%|█████     | 504/1000 [00:01&lt;00:01, 377.46it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  54%|█████▍    | 543/1000 [00:01&lt;00:01, 378.18it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  58%|█████▊    | 581/1000 [00:01&lt;00:01, 377.60it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  62%|██████▏   | 619/1000 [00:01&lt;00:01, 377.59it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  66%|██████▌   | 658/1000 [00:01&lt;00:00, 378.23it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  70%|██████▉   | 696/1000 [00:01&lt;00:00, 378.24it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  73%|███████▎  | 734/1000 [00:01&lt;00:00, 377.55it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  77%|███████▋  | 772/1000 [00:02&lt;00:00, 377.68it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  81%|████████  | 810/1000 [00:02&lt;00:00, 372.90it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  85%|████████▍ | 848/1000 [00:02&lt;00:00, 373.86it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  89%|████████▊ | 886/1000 [00:02&lt;00:00, 373.85it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  92%|█████████▎| 925/1000 [00:02&lt;00:00, 375.96it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  96%|█████████▋| 963/1000 [00:02&lt;00:00, 375.30it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 1000/1000 [00:02&lt;00:00, 377.82it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Elapsed time: 3.18595814704895
+Plotting results
+</pre></div>
+</div>
+<img alt="../_images/adfb026802df68449b4dbbcb6fcce19708eb2497d74523461a760991d602a350.png" src="../_images/adfb026802df68449b4dbbcb6fcce19708eb2497d74523461a760991d602a350.png" />
+</div>
+</div>
+<p>In the above example, we provided our assumptions about the data generating process by defining the distributions for the parameters and data and provided the observed data for the problem. CUQIpy then automatically sampled the posterior distribution and a credibility interval for the parameter <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> as well as the mean of the posterior was plotted and compared to the ground truth (x_exact).</p>
+<p>We see that compared to the ground truth, the mean of the posterior is a good estimate and the credibility interval contains the ground truth.</p>
+<p>In the next section, we show how to define the posterior distribution more explicitly and how to sample it with a specific choice of sampler.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="defining-and-sampling-a-bayesian-inverse-problem-low-level">
+<h1>2 Defining and sampling a Bayesian Inverse Problem (low-level)<a class="anchor" id="Joint"></a><a class="headerlink" href="#defining-and-sampling-a-bayesian-inverse-problem-low-level" title="Link to this heading">#</a></h1>
+<p>Instead of relying on the BayesianProblem class to automatically sample the posterior distribution (which does not always work well), we can also define the posterior distribution explicitly and sample it using a specific sampler in CUQIpy. This requires a bit more work, but it gives us more control over the sampling process.</p>
+<section id="defining-the-joint-distribution">
+<h2>2.1 Defining the joint distribution<a class="headerlink" href="#defining-the-joint-distribution" title="Link to this heading">#</a></h2>
+<p>In the Bayesian framework, we are interested in the joint distribution over <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>. The joint distribution is defined as the product of the individual probability density functions. In our simple case, the joint distribution can be described in density form as</p>
+<div class="math notranslate nohighlight">
+\[
+p(\mathbf{y},\mathbf{x}) = p(\mathbf{y} \mid \mathbf{x})p(\mathbf{x}).
+\]</div>
+<p>In CUQIpy, if we want more control, we can as an alternative to using BayesianProblem, instead define the joint distribution ourselves by passing each of the distributions as arguments to the <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.distribution/cuqi.distribution.JointDistribution.html#cuqi.distribution.JointDistribution">JointDistribution class</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define joint distribution p(y,x)</span>
+<span class="n">joint</span> <span class="o">=</span> <span class="n">JointDistribution</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">print</span></code> on the joint distribution gives a nice overview matching the mathematical description above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>JointDistribution(
+    Equation: 
+	p(y,x) = p(y|x)p(x)
+    Densities: 
+	y ~ CUQI Gaussian. Conditioning variables [&#39;x&#39;].
+	x ~ CUQI GMRF.
+)
+</pre></div>
+</div>
+</div>
+</div>
+<p>For the purpose of this notebook we are not going to dive further into the details of the joint distribution, and simply use it to define the posterior.</p>
+</section>
+<section id="defining-the-posterior-distribution">
+<h2>2.2 Defining the posterior distribution<a class="headerlink" href="#defining-the-posterior-distribution" title="Link to this heading">#</a></h2>
+<p>To define the posterior distribution, we have to condition the joint distribution <span class="math notranslate nohighlight">\(p(\mathbf{y},\mathbf{x})\)</span> on the observed data, say <span class="math notranslate nohighlight">\(\mathbf{y}_\mathrm{data}\)</span>. This is done by using Bayes’ theorem, which in our simple case can easily be derived as</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align*}
+p(\mathbf{x} \mid \mathbf{y}=\mathbf{y}_\mathrm{data}) \propto L(\mathbf{x} \mid \mathbf{y}=\mathbf{y}_\mathrm{data})p(\mathbf{x}),
+\end{align*}
+\]</div>
+<p>where we use the notation <span class="math notranslate nohighlight">\(L(\mathbf{x} \mid \mathbf{y}=\mathbf{y}_\mathrm{data}) := p(\mathbf{y}=\mathbf{y}_\mathrm{data} \mid \mathbf{x})\)</span> for the likelihood function to emphasize that, in the context of the posterior where <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> is fixed to <span class="math notranslate nohighlight">\(\mathbf{y}_\mathrm{data}\)</span>, it is a function of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and not on <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>. In CUQIpy we sometimes use the short-hand printing style <code class="docutils literal notranslate"><span class="pre">L(x|y)</span></code> for brevity.</p>
+<p>CUQIpy can automatically derive the posterior distribution for any joint distribution by passing the observed data as an argument to the “call” (condition) method of the joint distribution.  This is done as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span> <span class="c1"># Condition p(x,y) on y=y_data. Applies Bayes&#39; rule automatically</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can now inspect the posterior distribution by calling <code class="docutils literal notranslate"><span class="pre">print</span></code> on it. Notice that the posterior equation matches the mathematical expression above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Posterior(
+    Equation:
+	 p(x|y) ∝ L(x|y)p(x)
+    Densities:
+	y ~ CUQI Gaussian Likelihood function. Parameters [&#39;x&#39;].
+ 	x ~ CUQI GMRF.
+ )
+</pre></div>
+</div>
+</div>
+</div>
+<section id="id1">
+<h3>★ Try yourself (optional):<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>The posterior is essentially just another CUQIpy distribution. Have a look at the <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.distribution/cuqi.distribution.Posterior.html">Posterior class</a> in the online documentation to see what attributes and methods are available.</p>
+<p>Try evaluating the posterior log probability density function (logpdf) at some point say <span class="math notranslate nohighlight">\(\mathbf{1}\)</span> and <span class="math notranslate nohighlight">\(2\cdot\mathbf{1}\)</span>, where <span class="math notranslate nohighlight">\(\mathbf{1}\)</span> is a ones-vector.</p>
+<p>Try evaluating the posterior pdf at the same points. Can you explain why the pdf gives the same result for both points?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Your code here</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="sampling-the-posterior">
+<h1>2.3 Sampling the posterior<a class="headerlink" href="#sampling-the-posterior" title="Link to this heading">#</a></h1>
+<p>Now that we have defined the posterior distribution for our parameter of interest <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> given <span class="math notranslate nohighlight">\(\mathbf{y}_\mathrm{data}\)</span>, we can characterize the parameter and its uncertainty by samples from the posterior distribution. However, in general the posterior is not a simple distribution that we can easily sample from. Instead, we need to rely on Markov Chain Monte Carlo (MCMC) methods to sample from the posterior.</p>
+<p>In CUQIpy, a number of MCMC samplers are provided in the sampler module that can be used to sample probability distributions. All samplers have the same signature, namely <code class="docutils literal notranslate"><span class="pre">Sampler(target,</span> <span class="pre">...)</span></code>, where <code class="docutils literal notranslate"><span class="pre">target</span></code> is the target CUQIpy distribution and <code class="docutils literal notranslate"><span class="pre">...</span></code> indicates any (optional) arguments.</p>
+<p>In the case of the posterior above, which is defined from a linear model and Gaussian likelihood and prior, the Linear Randomize-then-Optimize <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc/cuqi.experimental.mcmc.LinearRTO.html#cuqi.experimental.mcmc.LinearRTO">(LinearRTO)</a> sampler is a good choice to efficiently generate samples. This is also the sampler chosen by the BayesianProblem class for this problem.</p>
+<p>Like any of the other samplers, we set up the sampler by simply providing the target distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">LinearRTO</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>After the sampler is defined we can compute samples via the <code class="docutils literal notranslate"><span class="pre">sample</span></code> method.</p>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:   0%|          | 0/500 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:   8%|▊         | 38/500 [00:00&lt;00:01, 377.36it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  15%|█▌        | 76/500 [00:00&lt;00:01, 376.89it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  23%|██▎       | 114/500 [00:00&lt;00:01, 373.42it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  30%|███       | 152/500 [00:00&lt;00:00, 375.38it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  38%|███▊      | 190/500 [00:00&lt;00:00, 376.53it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  46%|████▌     | 228/500 [00:00&lt;00:00, 376.13it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  53%|█████▎    | 266/500 [00:00&lt;00:00, 376.12it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  61%|██████    | 304/500 [00:00&lt;00:00, 375.66it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  68%|██████▊   | 342/500 [00:00&lt;00:00, 375.15it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  76%|███████▌  | 380/500 [00:01&lt;00:00, 376.26it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  84%|████████▎ | 418/500 [00:01&lt;00:00, 376.48it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  91%|█████████▏| 457/500 [00:01&lt;00:00, 378.51it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  99%|█████████▉| 495/500 [00:01&lt;00:00, 375.81it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 500/500 [00:01&lt;00:00, 375.78it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>and store them via the <code class="docutils literal notranslate"><span class="pre">get_samples</span></code> method.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_samples</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Similar to directly sampling distributions in CUQIpy, the returned object is a <code class="docutils literal notranslate"><span class="pre">cuqi.samples.Samples</span></code> object.</p>
+<p>This object has a number of methods available. In this case, we are interested in evaluating if the sampling went well. To do this we can have a look at the chain history for 2 different parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span><span class="o">.</span><span class="n">plot_chain</span><span class="p">([</span><span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/4742324a0034d4e1ddc1be16904cb1aa1818751b56d6b3e0fc3b5720adac1c5b.png" src="../_images/4742324a0034d4e1ddc1be16904cb1aa1818751b56d6b3e0fc3b5720adac1c5b.png" />
+</div>
+</div>
+<p>In both cases the chains look very good with no discernible difference between the start and end of the chain. This is a good indication that the chain has converged and there is little need for removing samples that are part of a “burn-in” period. In practice, the samples should be inspected with more rigor to ensure that the MCMC chain has converged, but this is outside the scope of this notebook.</p>
+<p>The good sampling is in large part due to the LinearRTO sampler, which is built specifically for the type of problem of this example. For the sake of presentation let us remove the first 100 samples using the <code class="docutils literal notranslate"><span class="pre">burnthin</span></code> method (see <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.samples/cuqi.samples.Samples.burnthin.html#cuqi.samples.Samples.burnthin">samples.burnthin</a>) and store the “burnthinned” samples in a new variable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_final</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">burnthin</span><span class="p">(</span><span class="n">Nb</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, we can plot a credibility interval of the samples and compare to the exact solution (from <code class="docutils literal notranslate"><span class="pre">probInfo</span></code>).</p>
+<p>This is what the <code class="docutils literal notranslate"><span class="pre">UQ</span></code> method of the BayesianProblem class did under the hood for us earlier.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples_final</span><span class="o">.</span><span class="n">plot_ci</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">probInfo</span><span class="o">.</span><span class="n">exactSolution</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f7d87861cc0&gt;,
+ &lt;matplotlib.lines.Line2D at 0x7f7d87861ff0&gt;,
+ &lt;matplotlib.collections.PolyCollection at 0x7f7d87861840&gt;]
+</pre></div>
+</div>
+<img alt="../_images/e319e0d8a2fd558f6e83cfac2c6034efbb479b57781d27fc70a3712ed7d07249.png" src="../_images/e319e0d8a2fd558f6e83cfac2c6034efbb479b57781d27fc70a3712ed7d07249.png" />
+</div>
+</div>
+<section id="trying-out-other-samples">
+<h2>Trying out other samples<a class="headerlink" href="#trying-out-other-samples" title="Link to this heading">#</a></h2>
+<p>The LinearRTO sampler can only sample Gaussian posteriors that also have an underlying linear model.</p>
+<p>It is possible to try out other CUQIpy samplers (which also work for a broader range of problems). For example:</p>
+<ul class="simple">
+<li><p><strong><a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc/cuqi.experimental.mcmc.PCN.html#cuqi.experimental.mcmc.PCN">PCN</a></strong> - preconditioned Crank-Nicolson sampler.</p></li>
+<li><p><strong><a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc/cuqi.experimental.mcmc.CWMH.html#cuqi.experimental.mcmc.CWMH">CWMH</a></strong> - Component-wise Metropolis-Hastings sampler.</p></li>
+<li><p><strong><a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc/cuqi.experimental.mcmc.ULA.html#cuqi.experimental.mcmc.ULA">ULA</a></strong> - Unadjusted Langevin Algorithm.</p></li>
+<li><p><strong><a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc/cuqi.experimental.mcmc.MALA.html#cuqi.experimental.mcmc.MALA">MALA</a></strong> - Metropolis Adjusted Langevin Algorithm.</p></li>
+<li><p><strong><a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc/cuqi.experimental.mcmc.NUTS.html#cuqi.experimental.mcmc.NUTS">NUTS</a></strong> - No U-Turn Sampler: A variant of the Hamiltonian Monte Carlo sampler well-established in literature.</p></li>
+</ul>
+<p>Note in particular that ULA, MALA and NUTS all require the gradient of the logpdf. This is handled automatically in CUQIpy for linear models.</p>
+<section id="id2">
+<h3>★ Try yourself (optional):<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>Try sampling the posterior above using one of the suggested samplers (click the links to look at the online documentation for the sampler to get more info on it).</p>
+<p>Compare results (chain, credibility interval etc.) to the results from LinearRTO.</p>
+<p>All the suggested samplers (except NUTS) will likely require &gt; 5000 samples to give reasonable results, and for some playing with step sizes (scale) is needed. This is because they are not as efficient as LinearRTO or NUTS. For some samplers, the method <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc/cuqi.experimental.mcmc.Sampler.warmup.html#cuqi.experimental.mcmc.Sampler.warmup">warmup</a> can be used tune various parameters of the sampler like the step size according to some criteria to e.g. reach approximately optimal acceptance rate before running <code class="docutils literal notranslate"><span class="pre">sample</span></code>. In these cases the burn-in should be removed from the samples at the end.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Your code here</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="exploring-different-prior-choices">
+<h1>3. Exploring different prior choices<a class="anchor" id="ModifyPriors"></a><a class="headerlink" href="#exploring-different-prior-choices" title="Link to this heading">#</a></h1>
+<p>In the above example, we used a GMRF prior for the parameter <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>. However, it is not always obvious what prior to use for a given problem. In such cases, it is often useful to try out different priors to see how they affect the posterior distribution.</p>
+<p>In CUQIpy, it is easy to modify the prior and re-sample the posterior distribution. This is most easily done by using the BayesianProblem class.</p>
+<section id="id3">
+<h2>Try yourself (optional):<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>Please carry out the following exercise to see how the prior affects the posterior distribution.</p>
+<p>Note that: here we use the <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.problem/cuqi.problem.BayesianProblem.sample_posterior.html#cuqi.problem.BayesianProblem.sample_posterior">sample_posterior</a> method of the BayesianProblem class to sample the posterior distribution and store the samples without plotting. We then manually plot the samples using the <code class="docutils literal notranslate"><span class="pre">plot_ci</span></code> method of the <code class="docutils literal notranslate"><span class="pre">Samples</span></code> object.</p>
+<ul class="simple">
+<li><p>Try another prior such as <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.distribution/cuqi.distribution.LMRF.html#cuqi.distribution.LMRF">LMRF</a> or <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.distribution/cuqi.distribution.CMRF.html#cuqi.distribution.CMRF">CMRF</a> for the 1D case (look up appropriate arguments in the documentation) using <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.problem/cuqi.problem.BayesianProblem.html#cuqi.problem.BayesianProblem"><code class="docutils literal notranslate"><span class="pre">BayesianProblem</span></code></a>.</p></li>
+<li><p>Try switching the testproblem from Deconvolution1D to <a class="reference external" href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.testproblem/cuqi.testproblem.Deconvolution2D.html#cuqi.testproblem.Deconvolution2D">Deconvolution2D</a> (look up appropriate arguments in the documentation).</p></li>
+<li><p>You may also try defining your own Bayesian inverse problem using this interface. ★</p></li>
+</ul>
+<div class="cell tag_scroll-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Your code here</span>
+<span class="c1"># You can modify this code or write your own from scratch</span>
+
+<span class="c1"># 1. Forward model and data</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">probInfo</span> <span class="o">=</span> <span class="n">Deconvolution1D</span><span class="p">(</span><span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;sinc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+
+<span class="c1"># 2. Distributions</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">GMRF</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="mi">50</span><span class="p">)</span> <span class="c1"># Try e.g. LMRF or CMRF (also update scale parameters!)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="mf">0.01</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># 3. Bayesian problem</span>
+<span class="n">BP</span> <span class="o">=</span> <span class="n">BayesianProblem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+
+<span class="c1"># 4. Sample posterior</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">sample_posterior</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">experimental</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 5. Analyze posterior</span>
+<span class="n">samples</span><span class="o">.</span><span class="n">plot_ci</span><span class="p">(</span><span class="n">exact</span><span class="o">=</span><span class="n">probInfo</span><span class="o">.</span><span class="n">exactSolution</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic sampler selection is a work-in-progress. !!!
+!!!       Always validate the computed results.        !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!  Using samplers from cuqi.experimental.mcmc  !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Using cuqi.experimental.mcmc LinearRTO sampler.
+burn-in: 20%
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:   0%|          | 0/100 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:  39%|███▉      | 39/100 [00:00&lt;00:00, 384.59it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup:  78%|███████▊  | 78/100 [00:00&lt;00:00, 381.49it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warmup: 100%|██████████| 100/100 [00:00&lt;00:00, 380.95it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:   0%|          | 0/500 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:   8%|▊         | 39/500 [00:00&lt;00:01, 385.03it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  16%|█▌        | 78/500 [00:00&lt;00:01, 383.13it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  23%|██▎       | 117/500 [00:00&lt;00:00, 383.86it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  31%|███       | 156/500 [00:00&lt;00:00, 380.82it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  39%|███▉      | 195/500 [00:00&lt;00:00, 382.76it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  47%|████▋     | 234/500 [00:00&lt;00:00, 384.76it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  55%|█████▍    | 273/500 [00:00&lt;00:00, 384.66it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  62%|██████▏   | 312/500 [00:00&lt;00:00, 385.49it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  70%|███████   | 351/500 [00:00&lt;00:00, 384.28it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  78%|███████▊  | 390/500 [00:01&lt;00:00, 383.07it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  86%|████████▌ | 429/500 [00:01&lt;00:00, 382.70it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample:  94%|█████████▎| 468/500 [00:01&lt;00:00, 378.40it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample: 100%|██████████| 500/500 [00:01&lt;00:00, 382.10it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Elapsed time: 1.576162338256836
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f7d84710040&gt;,
+ &lt;matplotlib.lines.Line2D at 0x7f7d84710820&gt;,
+ &lt;matplotlib.collections.PolyCollection at 0x7f7d84710070&gt;]
+</pre></div>
+</div>
+<img alt="../_images/3a30d7f7c0e54642b35807e288f739186992287a0b4b75b9ef997f251b80e410.png" src="../_images/3a30d7f7c0e54642b35807e288f739186992287a0b4b75b9ef997f251b80e410.png" />
+</div>
+</div>
+<p>You may have noticed that finding suitable parameters for the prior could be a challenge. To see how to automatically find suitable parameters for the prior, see the <a class="reference internal" href="../chapter04/gibbs.html"><span class="std std-doc">Gibbs notebook</span></a>.</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="computing-point-estimates-of-the-posterior">
+<h1>4. Computing point estimates of the posterior ★ <a class="anchor" id="pointestimates"></a><a class="headerlink" href="#computing-point-estimates-of-the-posterior" title="Link to this heading">#</a></h1>
+<p>In addition to sampling the posterior, we can also compute point estimates of the posterior. A common point estimate to consider is the Maximum A Posteriori (MAP) estimate, which is the value of the Bayesian parameter that maximizes the posterior density. That is,</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align*}
+\mathbf{x}_\mathrm{MAP} = \arg\max_\mathbf{x} p(\mathbf{x} \mid \mathbf{y}_\mathrm{data}).
+\end{align*}
+\]</div>
+<p>The easiest way to compute the MAP estimate is to use the <code class="docutils literal notranslate"><span class="pre">MAP</span></code> method of the <code class="docutils literal notranslate"><span class="pre">BayesianProblem</span></code> class as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We redefine in case something was changed</span>
+
+<span class="c1"># Deterministic forward model</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">probInfo</span> <span class="o">=</span> <span class="n">Deconvolution1D</span><span class="p">(</span><span class="n">phantom</span><span class="o">=</span><span class="s2">&quot;sinc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+
+<span class="c1"># Distributions for each parameter</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">GMRF</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">domain_dim</span><span class="p">),</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="mf">0.01</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Define Bayesian problem</span>
+<span class="n">BP</span> <span class="o">=</span> <span class="n">BayesianProblem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_map</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">MAP</span><span class="p">()</span> <span class="c1"># Maximum a posteriori estimate</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic solver selection is a work-in-progress !!!
+!!!      Always validate the computed results.       !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Optimizing with exact gradients
+Using scipy.optimize.minimize on negative log of Posterior
+x0: ones vector
+</pre></div>
+</div>
+</div>
+</div>
+<p>The automatic solver selection is also still work-in-progress.</p>
+<p>After we have computed the MAP, we can then estimate to the exact solution (from <code class="docutils literal notranslate"><span class="pre">probInfo</span></code>)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_map</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;MAP estimate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">probInfo</span><span class="o">.</span><span class="n">exactSolution</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Exact solution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/72985b42725d808384e46a4c56d9d65c3de56fa57ed7c36a16717297d6194aa8.png" src="../_images/72985b42725d808384e46a4c56d9d65c3de56fa57ed7c36a16717297d6194aa8.png" />
+<img alt="../_images/f8b959375131bac719deb8c9e123498a75406cc612c64ae253b9902726391866.png" src="../_images/f8b959375131bac719deb8c9e123498a75406cc612c64ae253b9902726391866.png" />
+</div>
+</div>
+<section id="id4">
+<h2>★ Try yourself (optional):<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Try switching to the Deconvolution2D testproblem. You may have to play with the prior standard deviation to get a good MAP estimate.</p></li>
+<li><p>Try switching the prior to a CMRF distribution for the 1D case. Does the MAP estimate change?</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "CUQI-DTU/CUQI-Book",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./chapter03"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="basics_forward_models.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Forward models, data generation and forward UQ</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../chapter04/chapter04.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Chapter 4: Advanced use cases of CUQIpy</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Bayesian Inverse Problems</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-modules">Load modules</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-and-sampling-a-bayesian-inverse-problem-high-level">1. Defining and sampling a Bayesian Inverse Problem (high-level)<a class="anchor" id="BIP"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-on-bayesian-inverse-problems-with-cuqipy">Note on Bayesian inverse problems with CUQIpy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deterministic-forward-model-and-observed-data">1.1 Deterministic forward model and observed data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distributions-for-parameters-and-data">1.2 Distributions for parameters and data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#try-yourself-optional">★ Try yourself (optional):</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#note-on-notation">Note on notation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-inverse-problem">1.3 Bayesian inverse problem</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-and-sampling-a-bayesian-inverse-problem-low-level">2 Defining and sampling a Bayesian Inverse Problem (low-level)<a class="anchor" id="Joint"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-joint-distribution">2.1 Defining the joint distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-posterior-distribution">2.2 Defining the posterior distribution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-the-posterior">2.3 Sampling the posterior</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trying-out-other-samples">Trying out other samples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-different-prior-choices">3. Exploring different prior choices<a class="anchor" id="ModifyPriors"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Try yourself (optional):</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-point-estimates-of-the-posterior">4. Computing point estimates of the posterior ★ <a class="anchor" id="pointestimates"></a></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">★ Try yourself (optional):</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CUQIpy developer team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+<a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a>
+</p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

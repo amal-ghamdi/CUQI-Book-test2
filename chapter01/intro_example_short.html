@@ -1,0 +1,1110 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Probably the simplest BIP in the world (the short story) &#8212; Uncertainty Quantification in Inverse Problems with CUQIpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"dd": "\\mathrm{d}", "abs": ["\\left\\vert#1\\right\\vert", 1], "ve": ["\\bm{#1}", 1], "mat": ["\\mathbf{#1}", 1], "N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"], "bm": ["{\\boldsymbol #1}", 1]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter01/intro_example_short';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Probably the simplest BIP in the world (the long story)" href="intro_example_long.html" />
+    <link rel="prev" title="Running the mini-book code examples" href="run_mini_book.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Uncertainty Quantification in Inverse Problems with CUQIpy - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Uncertainty Quantification in Inverse Problems with CUQIpy
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="chapter01.html">Chapter 1: Introduction to CUQIpy</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview_of_cuqipy.html">Overview of CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_mini_book.html">Running the mini-book code examples</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Probably the simplest BIP in the world (the short story)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_example_long.html">Probably the simplest BIP in the world (the long story)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter02/chapter02.html">Chapter 2: Problem examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter02/two_forward_problems.html">Two forward models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter02/two_target_distributions.html">Two target distributions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter03/chapter03.html">Chapter 3: Basics of CUQIpy for solving BIPs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter03/basics_distributions.html">Introduction to distributions and basic sampling in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter03/basics_forward_models.html">Forward models, data generation and forward UQ</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../chapter03/basics_bayesian_inverse_problems.html">Bayesian Inverse Problems</a></li>
+
+
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter04/chapter04.html">Chapter 4: Advanced use cases of CUQIpy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/gibbs.html">Gibbs sampling</a></li>
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/Plugins/CUQIpy-CIL/demo_ct.html">X-ray CT using CUQIpy and CUQIpy-CIL plugin</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/PDE/core_pde.html">Solving PDE-based BIP using core CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/Plugins/CUQIpy-FEniCS/poisson_2D_fenics.html">PDE-based BIP using CUQIpy and CUQIpy-FEniCS plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter04/Plugins/CUQIpy-PyTorch/hmc.html">Hamiltonian Monte Carlo with CUQIpy-PyTorch</a></li>
+
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter05/chapter05.html">Chapter 5: More on CUQIpy technical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter05/geometries_in_cuqipy.html">Geometry Objects: Representation, Parametrization, and Mapping</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter06/chapter06.html">Chapter 6: More theory on priors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter06/markov_random_fields.html">Markov random fields in CUQIpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter06/entropy.html">Computing the entropy of a distribution, numerically</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter07/chapter07.html">Chapter 7: More theory on sampling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter07/more_theory_on_sampling_with_cuqipy.html">Sampling with CUQIpy: five little stories</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter08/chapter08.html">Chapter 8: More resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/CUQI-DTU/CUQI-Book/blob/master/chapter01/intro_example_short.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/chapter01/intro_example_short.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Probably the simplest BIP in the world (the short story)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents-of-this-notebook"><font color="#CD853F"> Contents of this notebook: </font></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives"><font color="#CD853F"> 0. Learning objectives </font> <a class="anchor" id="r-learning-objectives"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-bip"><font color="#CD853F"> 1. Defining the BIP </font> <a class="anchor" id="r-defining-the-bip"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-model"><font color="#8B4513"> 1.1. The forward model </font> <a class="anchor" id="r-the-forward-model"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-prior"><font color="#8B4513"> 1.2. The prior </font> <a class="anchor" id="r-the-prior"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-noise-distribution"><font color="#8B4513"> 1.3. The noise distribution </font> <a class="anchor" id="r-the-noise-distribution"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-data-distribution"><font color="#8B4513"> 1.4. The data distribution </font> <a class="anchor" id="r-the-data-distribution"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-likelihood-function"><font color="#8B4513"> 1.5. The likelihood function </font> <a class="anchor" id="r-the-likelihood-function"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#putting-it-all-together-the-bip"><font color="#8B4513"> 1.6. Putting it all together, the BIP </font> <a class="anchor" id="r-putting-it-all-together-the-bip"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-definition-using-the-bayes-rule">Posterior definition using the Bayes’ rule</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-bip"><font color="#CD853F"> 2. Solving the BIP </font> <a class="anchor" id="r-solving-the-bip"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-a-posteriori-map-estimate"><font color="#8B4513"> 2.1. Maximum a posteriori (MAP) estimate </font> <a class="anchor" id="r-maximum-a-posteriori-map-estimate"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-from-the-posterior"><font color="#8B4513"> 2.2. Sampling from the posterior </font> <a class="anchor" id="r-sampling-from-the-posterior"></a></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary"><font color="#CD853F"> 3. Summary </font> <a class="anchor" id="r-summary"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references"><font color="#CD853F"> References </font> <a class="anchor" id="r-references"></a></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="probably-the-simplest-bip-in-the-world-the-short-story">
+<h1>Probably the simplest BIP in the world (the short story)<a class="headerlink" href="#probably-the-simplest-bip-in-the-world-the-short-story" title="Link to this heading">#</a></h1>
+<p>Here we define and solve a very simple Bayesian inverse problem (BIP) using
+CUQIpy. The purpose of this notebook is to introduce the basic concepts of
+Bayesian inverse problems in a simple way and to use minimal CUQIpy code to
+solve it.</p>
+<p>In the next notebooks (the long story), we discuss more details about setting up
+this BIP in CUQIpy and provide many exercises to help the reader to explore
+using CUQIpy in solving BIPs and think of slightly different BIP modeling
+scenarios.</p>
+<section id="contents-of-this-notebook">
+<h2><font color=#CD853F> Contents of this notebook: </font><a class="headerlink" href="#contents-of-this-notebook" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#r-learning-objectives"><span class="xref myst">0. Learning objectives</span></a></p></li>
+<li><p><a class="reference internal" href="#r-defining-the-bip"><span class="xref myst">1. Defining the BIP</span></a></p></li>
+<li><p><a class="reference internal" href="#r-solving-the-bip"><span class="xref myst">2. Solving the BIP</span></a></p></li>
+<li><p><a class="reference internal" href="#r-summary"><span class="xref myst">3. Summary</span></a></p></li>
+<li><p><a class="reference internal" href="#r-references"><span class="xref myst">References</span></a></p></li>
+</ul>
+</section>
+<section id="learning-objectives">
+<h2><font color=#CD853F> 0. Learning objectives </font> <a class="anchor" id="r-learning-objectives"></a><a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Create a simple BIP in CUQIpy</p>
+<ul>
+<li><p>Create a linear forward model object</p></li>
+<li><p>Create distribution objects that represent the prior, the noise, and the data distributions</p></li>
+<li><p>Use the <code class="docutils literal notranslate"><span class="pre">BayesianProblem</span></code> class to define the BIP</p></li>
+</ul>
+</li>
+<li><p>Solve a simple BIP in CUQIpy</p>
+<ul>
+<li><p>Compute the maximum a posteriori (MAP) estimate</p></li>
+<li><p>Sample from a simple posterior distribution and visualize the results</p></li>
+</ul>
+</li>
+</ul>
+<div style="border: 2px solid #FFB74D; background-color: #FFF3E0; border-radius: 8px; padding: 10px; font-family: Arial, sans-serif; color: #333; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); max-width: 750px; margin: 0 auto;">
+  <strong style="color: #E65100;">⚠️ Note:</strong> This notebook uses MCMC samplers from the new <code>cuqi.experimental.mcmc</code> module, which are expected to become the default soon. Check out the <a href="https://cuqi-dtu.github.io/CUQIpy/api/_autosummary/cuqi.experimental.mcmc.html#module-cuqi.experimental.mcmc">documentation</a> for more details.
+</div></section>
+<section id="defining-the-bip">
+<h2><font color=#CD853F> 1. Defining the BIP </font> <a class="anchor" id="r-defining-the-bip"></a><a class="headerlink" href="#defining-the-bip" title="Link to this heading">#</a></h2>
+<p>Consider the following inverse problem: given observed data <span class="math notranslate nohighlight">\(b\)</span>, determine <span class="math notranslate nohighlight">\(x_1\)</span>, and <span class="math notranslate nohighlight">\(x_2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[b = x_1 + x_2 + e \;\;\mathrm{with}\;\; e \sim \mathrm{Gaussian}(0, 0.1)\]</div>
+<p>We can also write it in the following matrix form:</p>
+<div class="math notranslate nohighlight">
+\[b = \mathbf{A}\mathbf{x} + e = \large(1,1\large)\binom{x_1}{x_2} + e\]</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>variable</p></th>
+<th class="head text-left"><p>description</p></th>
+<th class="head text-left"><p>dimension</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><span class="math notranslate nohighlight">\(\mathbf{x}\)</span></p></td>
+<td class="text-left"><p>parameter to be inferred</p></td>
+<td class="text-left"><p>2-dimensional​</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><span class="math notranslate nohighlight">\(\mathbf{A}\)</span></p></td>
+<td class="text-left"><p>forward model</p></td>
+<td class="text-left"><p>1-by-2 matrix</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><span class="math notranslate nohighlight">\(b\)</span></p></td>
+<td class="text-left"><p>data</p></td>
+<td class="text-left"><p>1-dimensional</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><span class="math notranslate nohighlight">\(e\)</span></p></td>
+<td class="text-left"><p>noise</p></td>
+<td class="text-left"><p>1-dimensional  ​</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This problem is:</p>
+<ul class="simple">
+<li><p>Considered a linear inverse problem since the forward model is linear.</p></li>
+<li><p>Ill-posed (in the sense of Hadamard [1]) since the solution is not unique, i.e., for some given value of <span class="math notranslate nohighlight">\(b\)</span>, e.g., <span class="math notranslate nohighlight">\(b=3\)</span>, all parameter pairs <span class="math notranslate nohighlight">\((x_1, x_2)\)</span> satisfying <span class="math notranslate nohighlight">\(x_1 + x_1 = 3\)</span> are solutions to the (noise-free) problem.</p></li>
+</ul>
+<p>Let us define the BIP components and solve it using CUQIpy.</p>
+<div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importing the required libraries</span>
+<span class="kn">from</span> <span class="nn">cuqi.distribution</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="kn">from</span> <span class="nn">cuqi.problem</span> <span class="kn">import</span> <span class="n">BayesianProblem</span>
+<span class="kn">from</span> <span class="nn">cuqi.model</span> <span class="kn">import</span> <span class="n">LinearModel</span>
+<span class="kn">from</span> <span class="nn">cuqi.utilities</span> <span class="kn">import</span> <span class="n">plot_1D_density</span><span class="p">,</span> <span class="n">plot_2D_density</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<section id="the-forward-model">
+<h3><font color=#8B4513> 1.1. The forward model </font> <a class="anchor" id="r-the-forward-model"></a><a class="headerlink" href="#the-forward-model" title="Link to this heading">#</a></h3>
+<p>Let us define the forward model <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. We start by specifying the underlying matrix:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we wrap <code class="docutils literal notranslate"><span class="pre">A_matrix</span></code> in a <code class="docutils literal notranslate"><span class="pre">CUQIpy</span></code> forward model object, which we name <code class="docutils literal notranslate"><span class="pre">A</span></code>, as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">A_matrix</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI LinearModel: _DefaultGeometry1D(2,) -&gt; _DefaultGeometry1D(1,).
+    Forward parameters: [&#39;x&#39;].
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-prior">
+<h3><font color=#8B4513> 1.2. The prior </font> <a class="anchor" id="r-the-prior"></a><a class="headerlink" href="#the-prior" title="Link to this heading">#</a></h3>
+<p><strong>Bayesian approach: Use prior to express belief about solution</strong></p>
+<p>A common choice for simplicity is the zero mean Gaussian prior where the components are independent and identically distributed (i.i.d.):</p>
+<div class="math notranslate nohighlight">
+\[ \mathbf{x} \sim \mathrm{Gaussian}(\mathbf{0}, \delta^2 \mathbf{I})\]</div>
+<p>The probability density function (PDF) of such a Gaussian prior is expressed as</p>
+<div class="math notranslate nohighlight">
+\[ \pi (\mathbf{x}) = \frac{1}{\sqrt{(2 \pi)^n \delta^{2n}}} \mathrm{exp}\left(-\frac{||\mathbf{x}||^2}{2\delta^2}\right) \]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(n\)</span> is the dimension of the parameter space (which is 2 in this specific case),</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta\)</span> is the standard deviation of the prior distribution,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{I}\)</span> is the identity matrix.</p></li>
+</ul>
+<p>Let us specify the prior distribution for the parameter <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> in <code class="docutils literal notranslate"><span class="pre">CUQIpy</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI Gaussian.
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can plot the prior PDF for the parameters <span class="math notranslate nohighlight">\(x_1\)</span> and <span class="math notranslate nohighlight">\(x_2\)</span>, along with samples from the prior distribution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot PDF</span>
+<span class="n">plot_2D_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v1_min</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">v1_max</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">v2_min</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">v2_max</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Sample</span>
+<span class="n">x_samples</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># Plot samples</span>
+<span class="n">x_samples</span><span class="o">.</span><span class="n">plot_pair</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/5b991095413412c2bf7c1e837e6244fa01ba84df8acc0d61092dd23d7c97599b.png" src="../_images/5b991095413412c2bf7c1e837e6244fa01ba84df8acc0d61092dd23d7c97599b.png" />
+</div>
+</div>
+</section>
+<section id="the-noise-distribution">
+<h3><font color=#8B4513> 1.3. The noise distribution </font> <a class="anchor" id="r-the-noise-distribution"></a><a class="headerlink" href="#the-noise-distribution" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>As mentioned earlier, we assume <span class="math notranslate nohighlight">\(e \sim \mathrm{Gaussain}(0, 0.1)\)</span></p></li>
+<li><p>We can define the noise distribution as follows:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let us also plot the PDF of the noise distribution, using the python function <code class="docutils literal notranslate"><span class="pre">plot_pdf_1D</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_1D_density</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f5812ffe2c0&gt;]
+</pre></div>
+</div>
+<img alt="../_images/fe7c5e68464907e6a02bec5461cda9cfd4c9bd552f89208318515c1c838b74fd.png" src="../_images/fe7c5e68464907e6a02bec5461cda9cfd4c9bd552f89208318515c1c838b74fd.png" />
+</div>
+</div>
+</section>
+<section id="the-data-distribution">
+<h3><font color=#8B4513> 1.4. The data distribution </font> <a class="anchor" id="r-the-data-distribution"></a><a class="headerlink" href="#the-data-distribution" title="Link to this heading">#</a></h3>
+<p>The noise in the measurement data follows <span class="math notranslate nohighlight">\(e \sim \mathrm{Gaussain}(0, 0.1)\)</span> and due to the relation <span class="math notranslate nohighlight">\(b = \mathbf{A}\mathbf{x} + e \)</span>, we can write</p>
+<div class="math notranslate nohighlight">
+\[ b | \mathbf{x} \sim \mathrm{Gaussian}(\mathbf{A}\mathbf{x}, \sigma^2\mathbf{I})\]</div>
+<p>and in this case we specify <span class="math notranslate nohighlight">\(\sigma^2 = 0.1\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[ \pi (b | \mathbf{x}) = \frac{1}{\sqrt{(2 \pi)^m \sigma^{2m}}} \mathrm{exp}\left(-\frac{||\mathbf{A}\mathbf{x}- b||^2}{2\sigma^2}\right) \]</div>
+<ul class="simple">
+<li><p>The data distribution is the conditional distribution of <span class="math notranslate nohighlight">\(b\)</span> given <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p></li>
+<li><p>This PDF can only be evaluated for a given <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p></li>
+</ul>
+<p>We create the data distribution object as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">A</span><span class="nd">@x</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI Gaussian. Conditioning variables [&#39;x&#39;].
+</pre></div>
+</div>
+</div>
+</div>
+<p>Before sampling or evaluating the PDF of <code class="docutils literal notranslate"><span class="pre">b</span></code>, we need to specify the value of the parameters<code class="docutils literal notranslate"><span class="pre">x</span></code>. Let us choose the following value:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">particular_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then we condition the data distribution <code class="docutils literal notranslate"><span class="pre">b</span></code> on the given parameter <code class="docutils literal notranslate"><span class="pre">particular_x</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b_given_particular_x</span> <span class="o">=</span> <span class="n">b</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">particular_x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b_given_particular_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI Gaussian.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we have the distribution object <code class="docutils literal notranslate"><span class="pre">b_given_particular_x</span></code> that represents the data distribution given a particular value of the parameters <code class="docutils literal notranslate"><span class="pre">x</span></code>. We can now plot the PDF of this distribution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_1D_density</span><span class="p">(</span><span class="n">b_given_particular_x</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f585c13f6a0&gt;]
+</pre></div>
+</div>
+<img alt="../_images/8e893896c15ed297d0a877b41a7f74255a69ddaba7e58377464a38382e034624.png" src="../_images/8e893896c15ed297d0a877b41a7f74255a69ddaba7e58377464a38382e034624.png" />
+</div>
+</div>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">b_given_particular_x</span></code> to simulate noisy data assuming that the true <code class="docutils literal notranslate"><span class="pre">x</span></code> parameters is <code class="docutils literal notranslate"><span class="pre">particular_x</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b_obs</span> <span class="o">=</span> <span class="n">b_given_particular_x</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b_obs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.3795450903823103
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-likelihood-function">
+<h3><font color=#8B4513> 1.5. The likelihood function </font> <a class="anchor" id="r-the-likelihood-function"></a><a class="headerlink" href="#the-likelihood-function" title="Link to this heading">#</a></h3>
+<p>We obtain the likelihood function by fixing observed data <span class="math notranslate nohighlight">\(b^\mathrm{obs}\)</span> in the data distribution and considering the function of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[L (\mathbf{x} | b^\mathrm{obs}) \mathrel{\vcenter{:}}= \pi (b^\mathrm{obs} | \mathbf{x})\]</div>
+<p>Since we are using a Gaussian noise model, the likelihood can be evaluated as</p>
+<div class="math notranslate nohighlight">
+\[L (\mathbf{x} | b=b^\mathrm{obs}) = \frac{1}{\sqrt{(2 \pi)^m \sigma^{2m}}}  \mathrm{exp}\left(-\frac{||\mathbf{A}\mathbf{x}- b^\mathrm{obs}||^2}{2\sigma^2}\right) = \frac{1}{\sqrt{2 \pi \cdot 0.1}} \mathrm{exp}\left(-\frac{(x_1+x_2- b^\mathrm{obs})^2}{2\cdot 0.1}\right) \]</div>
+<p>In CUQIpy, we can define the likelihood function as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">b</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">b_obs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CUQI Gaussian Likelihood function. Parameters [&#39;x&#39;].
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that the likelihood function is a density function and is not a distribution. If we try to compute <code class="docutils literal notranslate"><span class="pre">pdf</span></code> for example, we will get an error.</p>
+<p>We plot the likelihood function for the observed data <code class="docutils literal notranslate"><span class="pre">b_obs</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x1_lim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">x2_lim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plot_2D_density</span><span class="p">(</span>
+    <span class="n">likelihood</span><span class="p">,</span>
+    <span class="n">v1_min</span><span class="o">=</span><span class="n">x1_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1_max</span><span class="o">=</span><span class="n">x1_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">v2_min</span><span class="o">=</span><span class="n">x2_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v2_max</span><span class="o">=</span><span class="n">x2_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7f580ded6d10&gt;
+</pre></div>
+</div>
+<img alt="../_images/7cde5f57aac19e92d58320b73653e7eecee7e261f6886e541fe0ecfbe89af8b9.png" src="../_images/7cde5f57aac19e92d58320b73653e7eecee7e261f6886e541fe0ecfbe89af8b9.png" />
+</div>
+</div>
+<p><strong>Note:</strong> One method of estimating the inverse problem solution is to maximize the likelihood function, which is equivalent to minimizing the negative log-likelihood function. This is known as the maximum likelihood (ML) point estimate.</p>
+<p>For this problem, all the points <span class="math notranslate nohighlight">\((x_1, x_2)\)</span> that satisfy <span class="math notranslate nohighlight">\(x_1 + x_2 = b^\mathrm{obs}\)</span> are solutions to this maximization problem. These solutions are depicted as the red line in the likelihood plot below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the likelihood</span>
+<span class="n">plot_2D_density</span><span class="p">(</span>
+    <span class="n">likelihood</span><span class="p">,</span>
+    <span class="n">v1_min</span><span class="o">=</span><span class="n">x1_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1_max</span><span class="o">=</span><span class="n">x1_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">v2_min</span><span class="o">=</span><span class="n">x2_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v2_max</span><span class="o">=</span><span class="n">x2_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Plot the line x2 = b_obs - x1</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1_lim</span><span class="p">,</span> <span class="n">b_obs</span><span class="o">-</span><span class="n">x1_lim</span><span class="p">,</span> <span class="s1">&#39;--r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">x2_lim</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/3d17cfccf29e2c278362443c20f73bc1b0a56a2281ab77996c81b2e9f1868a06.png" src="../_images/3d17cfccf29e2c278362443c20f73bc1b0a56a2281ab77996c81b2e9f1868a06.png" />
+</div>
+</div>
+<p>Combining the likelihood with the prior will give us a unique maximum a posteriori (MAP) point estimate as we will see next.</p>
+</section>
+<section id="putting-it-all-together-the-bip">
+<h3><font color=#8B4513> 1.6. Putting it all together, the BIP </font> <a class="anchor" id="r-putting-it-all-together-the-bip"></a><a class="headerlink" href="#putting-it-all-together-the-bip" title="Link to this heading">#</a></h3>
+<section id="posterior-definition-using-the-bayes-rule">
+<h4>Posterior definition using the Bayes’ rule<a class="headerlink" href="#posterior-definition-using-the-bayes-rule" title="Link to this heading">#</a></h4>
+<p>The posterior is proportional to the product of <strong>likelihood</strong> and <strong>prior</strong></p>
+<div class="math notranslate nohighlight">
+\[\pi(\mathbf{x} | b=b^\mathrm{obs}) \propto L (\mathbf{x} | b=b^\mathrm{obs}) \pi(\mathbf{x})\]</div>
+<p>In CUQIpy, we can use the class <code class="docutils literal notranslate"><span class="pre">BayesianProblem</span></code> to bundle the prior, the data distribution, and the data, then use it to explore the posterior distribution (e.g. point estimate and sampling):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">BP</span> <span class="o">=</span> <span class="n">BayesianProblem</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">BP</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BayesianProblem with target: 
+ JointDistribution(
+    Equation: 
+	p(b,x) = p(b|x)p(x)
+    Densities: 
+	b ~ CUQI Gaussian. Conditioning variables [&#39;x&#39;].
+	x ~ CUQI Gaussian.
+)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we pass the data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">BP</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">b_obs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">BP</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BayesianProblem with target: 
+ Posterior(
+    Equation:
+	 p(x|b) ∝ L(x|b)p(x)
+    Densities:
+	b ~ CUQI Gaussian Likelihood function. Parameters [&#39;x&#39;].
+ 	x ~ CUQI Gaussian.
+ )
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note the difference in the target of the <code class="docutils literal notranslate"><span class="pre">BayesianProblem</span></code> object before and after passing the data.</p>
+</section>
+</section>
+</section>
+<section id="solving-the-bip">
+<h2><font color=#CD853F> 2. Solving the BIP </font> <a class="anchor" id="r-solving-the-bip"></a><a class="headerlink" href="#solving-the-bip" title="Link to this heading">#</a></h2>
+<section id="maximum-a-posteriori-map-estimate">
+<h3><font color=#8B4513> 2.1. Maximum a posteriori (MAP) estimate </font> <a class="anchor" id="r-maximum-a-posteriori-map-estimate"></a><a class="headerlink" href="#maximum-a-posteriori-map-estimate" title="Link to this heading">#</a></h3>
+<p>Maximizer of the posterior</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{x}^* = \underset{\mathbf{x}}{\operatorname{argmax\;}} \pi(\mathbf{x} | b=b^\mathrm{obs})\]</div>
+<p>In the case with Gaussian noise and Gaussian prior, this is the classic Tikhonov solution</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{x}^* = \underset{\mathbf{x}}{\operatorname{argmin\;}} \frac{1}{2 \sigma^2} ||\mathbf{A}\mathbf{x}- b^\mathrm{obs}||_2^2 + \frac{1}{2\delta^2}||\mathbf{x} ||^2_2\]</div>
+<p>To compute (and print) the MAP estimate in CUQIpy, we write:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">map_estimate</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">MAP</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">map_estimate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic solver selection is a work-in-progress !!!
+!!!      Always validate the computed results.       !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Using direct MAP of Gaussian posterior. Only works for small-scale problems with dim&lt;=2000.
+[1.65663975 1.65663975]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sampling-from-the-posterior">
+<h3><font color=#8B4513> 2.2. Sampling from the posterior </font> <a class="anchor" id="r-sampling-from-the-posterior"></a><a class="headerlink" href="#sampling-from-the-posterior" title="Link to this heading">#</a></h3>
+<p>The MAP point is a very useful point estimate, but it does not provide information about the uncertainty associated with the estimate. To quantify this uncertainty, we need to draw samples from the posterior distribution</p>
+<p>To sample the posterior distribution in CUQIpy, we can use the <code class="docutils literal notranslate"><span class="pre">sample_posterior</span></code> method of the <code class="docutils literal notranslate"><span class="pre">BayesianProblem</span></code> object:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="n">BP</span><span class="o">.</span><span class="n">sample_posterior</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">experimental</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Automatic sampler selection is a work-in-progress. !!!
+!!!       Always validate the computed results.        !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!  Using samplers from cuqi.experimental.mcmc  !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Using direct sampling of Gaussian posterior. Only works for small-scale problems with dim&lt;=2000.
+No burn-in needed for direct sampling.
+
+ Sample 0 / 1000
+ Sample 500 / 1000
+ Sample 1000 / 1000
+Elapsed time: 0.00627589225769043
+</pre></div>
+</div>
+</div>
+</div>
+<p>We visualize the samples:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the posterior PDF</span>
+<span class="n">plot_2D_density</span><span class="p">(</span><span class="n">BP</span><span class="o">.</span><span class="n">posterior</span><span class="p">,</span> <span class="n">x1_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x2_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x2_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Plot the posterior samples</span>
+<span class="n">samples</span><span class="o">.</span><span class="n">plot_pair</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">map_estimate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">map_estimate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;ro&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">x2_lim</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">x1_lim</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/8da4d8a4211c326003c52ec15cf7331931e9759cf2be4c5a01cea512c468822b.png" src="../_images/8da4d8a4211c326003c52ec15cf7331931e9759cf2be4c5a01cea512c468822b.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="summary">
+<h2><font color=#CD853F> 3. Summary </font> <a class="anchor" id="r-summary"></a><a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>In this notebook, we defined a simple Bayesian inverse problem (BIP) of two unknown parameters and solved it using CUQIpy. We defined the forward model, the prior, and the data distribution; and created simulated data. We then combined these components to define the BIP using the <code class="docutils literal notranslate"><span class="pre">BayesianProblem</span></code> class. We computed the maximum a posteriori (MAP) estimate and sampled from the posterior distribution to quantify the uncertainty in the estimate.</p>
+</section>
+<section id="references">
+<h2><font color=#CD853F> References </font> <a class="anchor" id="r-references"></a><a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Latz, J. (2020). On the well-posedness of Bayesian inverse problems. SIAM/ASA Journal on Uncertainty Quantification, 8(1), 451-482.</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "CUQI-DTU/CUQI-Book",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./chapter01"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="run_mini_book.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Running the mini-book code examples</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="intro_example_long.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Probably the simplest BIP in the world (the long story)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents-of-this-notebook"><font color="#CD853F"> Contents of this notebook: </font></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives"><font color="#CD853F"> 0. Learning objectives </font> <a class="anchor" id="r-learning-objectives"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-bip"><font color="#CD853F"> 1. Defining the BIP </font> <a class="anchor" id="r-defining-the-bip"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-model"><font color="#8B4513"> 1.1. The forward model </font> <a class="anchor" id="r-the-forward-model"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-prior"><font color="#8B4513"> 1.2. The prior </font> <a class="anchor" id="r-the-prior"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-noise-distribution"><font color="#8B4513"> 1.3. The noise distribution </font> <a class="anchor" id="r-the-noise-distribution"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-data-distribution"><font color="#8B4513"> 1.4. The data distribution </font> <a class="anchor" id="r-the-data-distribution"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-likelihood-function"><font color="#8B4513"> 1.5. The likelihood function </font> <a class="anchor" id="r-the-likelihood-function"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#putting-it-all-together-the-bip"><font color="#8B4513"> 1.6. Putting it all together, the BIP </font> <a class="anchor" id="r-putting-it-all-together-the-bip"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-definition-using-the-bayes-rule">Posterior definition using the Bayes’ rule</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-bip"><font color="#CD853F"> 2. Solving the BIP </font> <a class="anchor" id="r-solving-the-bip"></a></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-a-posteriori-map-estimate"><font color="#8B4513"> 2.1. Maximum a posteriori (MAP) estimate </font> <a class="anchor" id="r-maximum-a-posteriori-map-estimate"></a></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-from-the-posterior"><font color="#8B4513"> 2.2. Sampling from the posterior </font> <a class="anchor" id="r-sampling-from-the-posterior"></a></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary"><font color="#CD853F"> 3. Summary </font> <a class="anchor" id="r-summary"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references"><font color="#CD853F"> References </font> <a class="anchor" id="r-references"></a></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CUQIpy developer team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+<a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a>
+</p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
