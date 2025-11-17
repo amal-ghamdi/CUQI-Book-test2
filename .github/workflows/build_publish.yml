@@ -29,7 +29,7 @@ jobs:
     # Build the book
     - name: Build the book
       run: |
-        jupyter-book build . --debug
+        jupyter-book build . --debug --html
 
     # If PR-based build. Upload artifact of book for download and review
     - name: Upload artifact
@@ -37,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: book
-        path: ./public
+        path: ./_build/html
 
     # Push the book's HTML to github-pages
     - name: GitHub Pages action
