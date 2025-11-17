@@ -4,7 +4,7 @@
 
 # ===== Main Landing Page ========================================
 format: jb-book
-root: intro
+root: intro.md
 options:
   numbered: true
 parts:
