@@ -55,5 +55,4 @@ jobs:
       - name: Deploy to GitHub Pages
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         id: deployment
-        environment: github-pages
         uses: actions/deploy-pages@v4
