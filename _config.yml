@@ -1,0 +1,100 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: Uncertainty Quantification in Inverse Problems with CUQIpy
+author: CUQIpy developer team
+logo: images/logo.png
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+#  allow_errors: true
+  execute_notebooks: cache
+  exclude_patterns:
+    - 'hmc*'
+    - 'poisson_2D_fenics*'
+    - 'demo_ct*'
+    - 'sketch*'
+    - 'core_pde*'
+
+
+# Define the name of the latex output file for PDF builds
+latex:
+  latex_documents:
+    targetname: book.tex
+  latex_engine              : pdflatex 
+  use_jupyterbook_latex     : true # use sphinx-jupyterbook-latex for pdf builds as default
+
+# Add a bibtex file so that we can create citations
+bibtex_bibfiles:
+  - references.bib
+
+# Information about where the book exists on the web
+repository:
+  url: https://github.com/CUQI-DTU/CUQI-Book  # Online location of your book
+  path_to_book: /  # Optional path to your book, relative to the repository root
+  branch: master  # Which branch of the repository should be used when creating links (optional)
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+
+html:
+  use_issues_button: true
+  use_repository_button: true
+  navbar_number_sections: true
+
+# extention for sphinx-book-theme
+
+sphinx:
+  extra_extensions          : ["sphinx_multitoc_numbering"]
+  nb_execution_timeout: 100000
+  config:
+    mathjax_path: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+    mathjax3_config:
+      tex:
+        macros:
+          "dd"    : "\\mathrm{d}"
+          "abs"   : ["\\left\\vert#1\\right\\vert", 1]
+          "ve"    : ["\\bm{#1}", 1]
+          "mat"   : ["\\mathbf{#1}",1]
+          "N"     : "\\mathbb{N}"
+          "floor" : ["\\lfloor#1\\rfloor", 1]
+          "bmat"  : ["\\left[\\begin{array}"]
+          "emat"  : ["\\end{array}\\right]"]
+          "bm"    : ["{\\boldsymbol #1}",1]
+    #latex_elements:
+    #  preamble: '\newcommand{\mycmnd}{\arabic{mycmnd}}'
+
+#parse:
+#  myst_enable_extensions:
+#    # don't forget to list any other extensions you want enabled,
+#    # including those that are enabled by default!
+#    - amsmath
+#    - attrs_inline
+#    - colon_fence
+#    - deflist
+#    - dollarmath
+#    - fieldlist
+#    - html_admonition
+#    - html_image
+#    - linkify
+#    - replacements
+#    - smartquotes
+#    - strikethrough
+#    - substitution
+#    - tasklist
+
+launch_buttons:
+  colab_url: "https://colab.research.google.com"
+  thebe                  : true
+
+# add license Apache 2.0
+license:
+  name: Apache 2.0
+  url: https://www.apache.org/licenses/LICENSE-2.0
+
+html:
+  extra_footer: |
+    <p>
+    <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a>
+    </p>
