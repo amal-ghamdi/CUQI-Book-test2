@@ -59,16 +59,5 @@ site:
   template: book-theme
 
 
-# ---- Execution / notebooks ----
-# In Jupyter Book 2 / MyST, execution is usually controlled via CLI flags:
-#   jupyter book build . --execute
-# and/or per-file metadata. Your old execute: block is here as documentation.
-mystnb:
-    execution_excludepatterns: [
-    "hmc*",
-    "poisson_2D_fenics*",
-    "demo_ct*",
-    "sketch*",
-    "core_pde*"
-]
+
 
