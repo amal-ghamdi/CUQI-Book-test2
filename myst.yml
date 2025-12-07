@@ -53,6 +53,9 @@ project:
 site:
   options:
     logo: images/logo.png
+    #folders: true # comment this out to fix tableofcontents links.
+    # As a side effect, this sitting will not maintain folder structure
+    # in the book pages link
   template: book-theme
 
 
