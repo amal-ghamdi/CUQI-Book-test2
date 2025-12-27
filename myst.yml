@@ -1,0 +1,63 @@
+version: 1
+project:
+  title: Uncertainty Quantification in Inverse Problems with CUQIpy
+  authors:
+    - name: CUQIpy developer team
+  github: CUQI-DTU/CUQI-Book
+  thebe:
+    binder:
+      repo: CUQI-DTU/CUQI-Book
+      provider: github
+      ref: master
+  bibliography:
+    - references.bib
+  exports:
+    - format: pdf
+      template: plain_latex_book
+      output: exports/book.pdf
+  toc:
+    - file: intro.md
+    - file: chapter01/chapter01.md
+      children:
+        - file: chapter01/overview_of_cuqipy.md
+        - file: chapter01/run_mini_book.md
+        - file: chapter01/intro_example_short.ipynb
+        - file: chapter01/intro_example_long.ipynb
+    - file: chapter02/chapter02.md
+      children:
+        - file: chapter02/two_forward_problems.ipynb
+        - file: chapter02/two_target_distributions.ipynb
+    - file: chapter03/chapter03.md
+      children:
+        - file: chapter03/basics_distributions.ipynb
+        - file: chapter03/basics_forward_models.ipynb
+        - file: chapter03/basics_bayesian_inverse_problems.ipynb
+    - file: chapter04/chapter04.md
+      children:
+        - file: chapter04/gibbs.ipynb
+        - file: chapter04/Plugins/CUQIpy-CIL/demo_ct.ipynb
+        - file: chapter04/PDE/core_pde.ipynb
+        - file: chapter04/Plugins/CUQIpy-FEniCS/poisson_2D_fenics.ipynb
+        - file: chapter04/Plugins/CUQIpy-PyTorch/hmc.ipynb
+    - file: chapter05/chapter05.md
+      children:
+        - file: chapter05/geometries_in_cuqipy.ipynb
+    - file: chapter06/chapter06.md
+      children:
+        - file: chapter06/markov_random_fields.ipynb
+        - file: chapter06/entropy.ipynb
+    - file: chapter07/chapter07.md
+      children:
+        - file: chapter07/more_theory_on_sampling_with_cuqipy.ipynb
+    - file: chapter08/chapter08.md
+site:
+  options:
+    logo: images/logo.png
+    #folders: true # comment this out to fix tableofcontents links.
+    # As a side effect, this sitting will not maintain folder structure
+    # in the book pages link
+  template: book-theme
+
+
+
+
