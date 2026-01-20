@@ -1,5 +1,4 @@
-
-# Running the mini-book code examples
+# Running the book code examples
 
 
 Here we suggest the following options to run the code notebooks in this mini-book:
