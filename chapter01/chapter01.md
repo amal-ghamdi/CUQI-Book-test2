@@ -11,4 +11,3 @@ By the end of this chapter, you will be able to:
 - Explain the difference between data distribution and likelihood
 - Explain the role of prior and likelihood
 - List 2 methods used to characterize the posterior distribution
-
