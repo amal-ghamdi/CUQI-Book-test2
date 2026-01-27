@@ -1,3 +1,3 @@
 # ⚠️ Distribution gallery
 
-> ⚠️ **Contents to be added** - This section will showcase various probability distributions available in CUQIpy distribution gallery along with their visualizations.
+> ⚠️ **Contents to be added:** - This is no longer part of the book.

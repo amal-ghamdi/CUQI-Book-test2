@@ -1,3 +1,3 @@
 # ⚠️ Random variables and hierarchical priors
 
-> ⚠️ **Contents to be added** 
+> ⚠️ **Contents to be added:** Here we introduce the concept of random variables as used in CUQIpy, including how to create and manipulate them (e.g. with algebraic operations). We also discuss hierarchical priors, explaining why they are important in Bayesian inverse problems and how they can be implemented using CUQIpy. We can provide and compare examples of creating hierarchical priors using lambda function vs using random variables. We can refer to subsequent chapters/sections in the book where we will use hierarchical priors with Bayesian inversion and Gibbs.
