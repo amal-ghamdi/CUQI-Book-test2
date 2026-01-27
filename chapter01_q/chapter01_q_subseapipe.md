@@ -1,3 +1,3 @@
 # ⚠️ Prior modeling and uncertainty quantification in X-ray computed tomography with application to defect detection in subsea pipes
 
-> ⚠️ **Contents to be added** 
+> ⚠️ **Contents to be added:** Add a paragraph or so describing Silja's PhD work and publications related to subsea pipe defect detection using CUQIpy. Also add references to these resources. Possibly add a representative figure with a caption describing what it is about.
