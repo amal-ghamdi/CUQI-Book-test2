@@ -14,7 +14,7 @@ We conclude that free diffusion dominates transport of small molecules in the co
 
 <figure>
 <img src="figures/fig_inference.png" alt="Parameter inference" width="600"/>
-<figcaption>Inferred spatially-varying diffusion (first column), noise level (second column), and advection speed (third column) in two animals, mouse 3 left ear and mouse 4 right ear. Note that in the first column, we show two inference results, one with assuming that the transport model is only governed by diffusion (blue) and the other one assuming that both advection and diffusion are present (gray). The inferred diffusion profiles are similar in both cases, and the inferred advection is very small, suggesting that diffusion dominates transport in the cochlear aqueduct. $D_E$ is the free diffusion coefficient of the tracer estimated from the literature.
+<figcaption>Inferred spatially-varying diffusion (first column), noise level (second column), and advection speed (third column) in two animals, mouse 3 left ear and mouse 4 right ear. Note that in the first column, we show two inference results, one with assuming that the transport model is only governed by diffusion (blue) and the other one assuming that both advection and diffusion are present (gray). The inferred diffusion profiles are similar in both cases, and the inferred advection is very small, suggesting that diffusion dominates transport in the cochlear aqueduct. D<sub>E</sub> is the free diffusion coefficient of the tracer estimated from the literature.
 </figcaption>
 </figure>
 
