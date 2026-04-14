@@ -12,7 +12,7 @@ For example in the [super-resolution imaging](https://github.com/CUQI-DTU/CUQIpy
 </figcaption>
 </figure>
 
-Laplace priors offer an appealing choice due to their ability to promote sparsity and handle heavy-tailed distributions, but their application in high-dimensional inverse problems is challenging. This case study proposes a novel approach that combines the method of Certified Coordinate Selection (CCS) with a gradient-based sampling method. CCS allows one to efficiently identify the components in the unknown that contribute most to the update from the prior to the posterior, effectively reducing the dimensionality of the problem considered during inference, as shown in Figure 2.
+For the STORM problem, Laplace priors are an appealing choice for their ability to promote sparsity and handle heavy-tailed distributions, but their application in high-dimensional inverse problems is challenging. This case study proposes a novel approach that combines the method of Certified Coordinate Selection (CCS) with a gradient-based sampling method. CCS allows one to efficiently identify the components in the unknown that contribute most to the update from the prior to the posterior, effectively reducing the dimensionality of the problem considered during inference, as shown in Figure 2.
 
 <figure>
 <img src="figures/storm_ccs.png" alt="Storm data" width="300"/>
