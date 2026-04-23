@@ -89,6 +89,7 @@ project:
             - file: chapter01_q/chapter01_uq_paper.md
             - file: chapter01_q/chapter01_q_subseapipe.md
             - file: chapter01_q/chapter01_q_ca.md
+            - file: chapter01_q/chapter01_q_gp.md
 
         - file: chapter08/chapter08.md #ch15
 site:
