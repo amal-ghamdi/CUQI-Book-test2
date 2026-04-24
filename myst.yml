@@ -1,8 +1,8 @@
 version: 1
 project:
   title: Uncertainty Quantification in Inverse Problems with CUQIpy
-  authors:
-    - name: CUQIpy developer team
+  #authors:
+  #  - name: CUQIpy developer team
   github: CUQI-DTU/CUQI-Book
   thebe:
     binder:
