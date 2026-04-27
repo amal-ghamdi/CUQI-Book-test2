@@ -1,0 +1,45 @@
+jtex: v1
+title: Plain LaTeX (No Numbering)
+description: A minimal template for PDF export without section numbering
+version: 1.0.0
+license: CC-BY-4.0
+authors:
+  - name: CUQI-DTU
+
+tags:
+  - article
+  - paper
+  - vanilla
+
+parts:
+  - id: abstract
+    description: >
+      An abstract is a short summary of your research paper or report.
+
+doc:
+  - id: title
+    required: true
+  - id: authors
+  - id: date
+  - id: bibliography
+
+options:
+  - id: link
+    type: string
+    title: Footnote Link
+    description: >
+      Add a footnote containing a link back to the online version.
+  - id: logo
+    type: boolean
+    default: false
+    title: Curvenote Logo
+    description: >
+      Add a logo below the title.
+
+files:
+  - template.tex
+
+packages:
+  - graphicx
+  - hyperref
+  - natbib
