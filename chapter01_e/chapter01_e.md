@@ -1,4 +1,4 @@
-# ⚠️ Chapter 5: Solving BIPs in CUQIpy
+# Chapter 6: Solving BIPs in CUQIpy
 
 > ⚠️ **Contents to be added:** Add intro to the chapter. 
 
