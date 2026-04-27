@@ -1,4 +1,4 @@
-# Running the book code examples
+# 2. Running the book code examples
 
 
 Here we suggest the following options to run the code notebooks in this mini-book:
@@ -6,7 +6,7 @@ Here we suggest the following options to run the code notebooks in this mini-boo
 - Running on your local machine (preferred)
 - Running using the launch buttons (for quick exploration)
 
-## Option 1: Running on your local machine (preferred)
+## 2.1. Running on your local machine (preferred)
 
 
 To run the notebooks on your local machine, you will first need to install CUQIpy and its dependencies. CUQIpy installation instructions can be found [here](https://cuqi-dtu.github.io/CUQIpy/user/getting_started.html).
@@ -19,7 +19,7 @@ git clone https://github.com/CUQI-DTU/CUQI-Book.git
 ```
 
 
-## Option 2: Running using the launch button (for quick exploration)
+## 2.2. Running using the launch button (for quick exploration)
 You can run the notebooks using the launch button (a "rocket" icon at the top-right corner of each notebook) which gives you two options:
 - Live Code: For running the notebook interactively using [Binder service](mybinder.org).
 - Colab: For running the notebook on [Google Colab](https://colab.research.google.com/). 
