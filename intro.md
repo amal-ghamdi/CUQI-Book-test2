@@ -20,3 +20,7 @@ This book contains training material on how to use the [CUQIpy](https://github.c
 - [Chao Zhang](https://github.com/chaozg)
 
 - [Felipe Uribe](https://github.com/furibec)
+
+- [Jasper M. Everink](https://github.com/jeverink)
+
+- [Silja L. Christensen](https://github.com/siljachr)
