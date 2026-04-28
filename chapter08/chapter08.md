@@ -1,6 +1,6 @@
 # Chapter 16: Resources and bibliography
 
-## Resources
+## 1. Resources
 - [CUQIpy documentation](https://cuqi-dtu.github.io/CUQIpy/)
 - [CUQIpy GitHub repository](https://github.com/CUQI-DTU/CUQIpy)
 - Paper: CUQIpy: I. Computational uncertainty quantification for inverse problems in Python {cite}`Riis_2024` ([GitHub repository for the paper](https://github.com/CUQI-DTU/Paper-CUQIpy-1-Core))
@@ -8,6 +8,6 @@
 - [User showcase repository for CUQIpy](https://github.com/CUQI-DTU/CUQIpy-User-Showcase)
 
 
-## Bibliography
+## 2. Bibliography
 ```{bibliography}
 ```
