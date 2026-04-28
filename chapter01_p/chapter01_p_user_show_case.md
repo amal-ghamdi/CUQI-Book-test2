@@ -1,4 +1,4 @@
-# User showcase collection
+# 1. User showcase collection
 
 The [CUQIpy User Showcase repository](https://github.com/CUQI-DTU/CUQIpy-User-Showcase) is a dedicated space for collecting and sharing a diverse array of practical applications built using CUQIpy. The repository originated as a community-driven initiative where enthusiastic CUQIpy users generously contribute their own use cases, custom implementations, and experiments. Its main purpose is to serve as an educational and practical resource, providing real-world examples of how CUQIpy can be used to solve complex inverse problems and quantify uncertainty across different domains.
 
