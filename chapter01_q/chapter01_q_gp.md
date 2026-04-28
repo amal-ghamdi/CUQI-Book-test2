@@ -1,6 +1,6 @@
-# Efficient monotonic Gaussian processes via Randomize-then-Optimize
+# 7. Efficient monotonic Gaussian processes via Randomize-then-Optimize
 
-## Summary
+## 7.1. Summary
 
 Gaussian Processes (GPs) constitute a robust Bayesian framework for non-parametric function approximation, distinguished by their modeling flexibility and principled uncertainty quantification. Historically rooted in geostatistical kriging, GPs have gained significant traction across machine learning, global optimization, and reliability analysis. Their capacity to construct high-fidelity surrogate models is particularly indispensable in scientific and engineering domains where empirical data is either sparse or prohibitively expensive to acquire. In this work, {cite}`Zhang2026efficient`, we address the computational intractability of integrating monotonicity constraints into GP frameworks, proposing accelerated methodologies to enhance predictive fidelity in the modeling of physical systems.
 
@@ -28,6 +28,6 @@ At implementation, we make use of `cuqi.sampler.RegularizedLinearRTO` with the n
 
 We provide extensive experiments and detailed comparisons of our method with established virtual point-based methods in the paper. In particular, we want to highlight that our RLRTO method stands out for its computational efficiency. As shown in Figure 2, RLRTO achieves the lowest integrated autocorrelation time (IAT) and the highest effective samples per second (ESS/s) among all evaluated methods. The proposed method is particularly useful for applications where monotonicity constraints are important, such as in optimization and decision-making problems.
 
-## Resources
+## 7.2. Resources
 - Paper: {cite}`Zhang2026efficient`
 - Paper code GitHub repository: https://github.com/CUQI-DTU/Paper-FMGP
