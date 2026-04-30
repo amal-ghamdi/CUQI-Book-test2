@@ -52,7 +52,6 @@ project:
           children:
             - file: chapter05/geometries_in_cuqipy.ipynb
 
-
     - title: "Part II: Inference and Sampling Methods"  
       children:
         - file: chapter01_g/chapter01_g.md #ch7
@@ -66,10 +65,9 @@ project:
           children:
             - file: chapter04/Plugins/CUQIpy-PyTorch/hmc.ipynb
         - file: chapter01_m/chapter01_m.md #ch10
-          children:
-            - file: chapter01_m/chapter01_m_RTO.md
-            - file: chapter01_m/chapter01_MYULA_PNPULA.md
-
+          #children:
+          #  - file: chapter01_m/chapter01_m_RTO.md
+          #  - file: chapter01_m/chapter01_MYULA_PNPULA.md
 
     - title: "Part III: Applications and Research Using CUQIpy"
       children:
@@ -93,7 +91,6 @@ project:
             - file: chapter01_q/chapter01_q_subseapipe.md
             - file: chapter01_q/chapter01_q_ca.md
             - file: chapter01_q/chapter01_q_gp.md
-
         - file: chapter08/chapter08.md #ch15
 site:
   options:
